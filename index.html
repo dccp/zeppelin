@@ -1,58 +1,92 @@
-<html>
-<head>
-  <title>JavaScript API</title>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>JSAPI_1.html</title>
+        <a href="index.html">Back to Contents</a>
+        <script type="text/javascript">
+        
+        //contract source code
+        var soliditySource = "contract metaCoin {\n"+
+        " mapping (address => uint) balances;\n" +
+        " function metaCoin() {\n" +
+        " balances[msg.sender] = 10000;\n" +
+        " }\n" +
+        " function sendCoin(address receiver, uint amount) returns(bool successful) {\n" +
+        " if (balances[msg.sender] < amount) return false;\n" +
+        " balances[msg.sender] -= amount;\n" +
+        " balances[receiver] += amount;\n" +
+        " return true;\n" +
+        " }\n" +
+        "}";
 
-  <script type="text/javascript">
-  web3.eth.watch('chain').changed(function(){
-      var coinbase = web3.eth.coinbase;
-      document.getElementById('coinbase').innerText = coinbase;
-      var balance = web3.eth.balanceAt(coinbase);
-      document.getElementById('balance').innerText = web3.toDecimal(balance);
-  });
-  ///Insert your contract address var here:
-    var contractAddress = "0x552434d1809be0c3d0293616ce8b95e522227504";
-  
-  ///Second web3.eth.watch code to monitor block number
-web3.eth.watch('pending').changed(function(){
-  var blockNumber = web3.eth.number;
-  document.getElementById('latestBlock').innerText = blockNumber;
-  var hash = web3.eth.block(blockNumber).hash;
-  document.getElementById('latestBlockHash').innerText = hash;
-  var timeStamp = web3.eth.block(blockNumber).timestamp;
-  document.getElementById('latestBlockTimestamp').innerText = Date(timeStamp);
-  var contractString = JSON.stringify(web3.eth.storageAt(contractAddress))
-  document.getElementById('contractString').innerText = contractString;
-  var storageObject = web3.eth.storageAt(contractAddress);
-  document.getElementById('fullName').innerText = web3.toAscii(storageObject['0x']) + ' ' + web3.toAscii(storageObject['0x01']);
-});
-  
-  </script>
-  
-  </head>
-  
-  <body>
-  
-    <div class="header">
-        <h3>JavaScript API</h3>
-          </div>
-          
-            <div class="jumbotron">
-                    <h5>Coinbase Address: <strong id="coinbase"></strong></h5>
-                    <h5>Balance: <strong id="balance"></strong></h5>
-                    <h5>Latest Block Number: <strong id="latestBlock"></strong></h5>
-                    <h5>Latest Block Timestamp: <strong id="latestBlockTimestamp"></strong></h5>
-                    <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
-                    <h5>Contract String: <strong id="contractString"></strong></h5>
-                    <h5>Favourite Python: <strong id="fullName"></strong></h5>
-                    <br>
-                  </div>
-              
-                  </body>
-              
-                  </html></strong></h>
-    </div>
-  </body></title>
-</head>
+        //contract abi object
+        var contractDesc = [{
+            "name": "sendCoin(address,uint256)",
+            "type": "function",
+            "inputs": [
+            {
+            "name": "to",
+            "type": "address"
+            },
+            {
+            "name": "value",
+            "type": "uint256"
+            }
+            ]
+        }];
+
+        var contract;
+
+        //function for a simple transaction to transfer ether
+        function dataTransaction() {
+            var receiverAddress = document.querySelector('#receiverAddress').value;
+            var amount = document.querySelector('#amount').value;
+            contract.sendCoin(receiverAddress, amount);
+        };
+
+        //function to create a new contract from our source code
+        function createSolidityContract() {
+            var address = web3.eth.transact({code: web3.eth.solidity(soliditySource)});
+            contract = web3.eth.contract(address, contractDesc);
+        };
+
+        //function to send transaction using attributes from the HTML input boxes
+        function sendEther() {
+            web3.eth.transact({to: document.querySelector('#recipient').value ,value: document.querySelector('#value').value});
+        };
+        </script>
+    </head>
+    <body>
+        <div>
+            <div>
+                <h3>Transact Example</h3>
+            </div>
+            <div>
+                <input id="recipient" type="text" placeholder="To">
+                <input id="value" type="text" placeholder="Value in Wei">
+            </div>
+            <div>
+                <button onclick="sendEther();">Send Ether</button>
+            </div>
+            <div>
+                <h3>Create a contract</h3>
+            </div>
+            <div>
+                <button onclick="createSolidityContract();">Create Solidity Coin Contract</button>
+            </div>
+            <div>
+                <h3>Send some coins</h3>
+            </div>
+            <div>
+                <input id="receiverAddress" class="form-control" type="text" placeholder="Receiver address"></input><br>
+                <input id="amount" class="form-control" type="text" placeholder="Amount"></input><br>
+            </div>
+            <button onclick="dataTransaction();">Send transaction</button>
+        </div>
+        <div>
+            Put in addresses prefixed with '0x' and hit 'Send transaction'
+        </div>
+    </body>
 </html>
+
