@@ -2,91 +2,21 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>JSAPI_1.html</title>
-        <a href="index.html">Back to Contents</a>
-        <script type="text/javascript">
-        
-        //contract source code
-        var soliditySource = "contract metaCoin {\n"+
-        " mapping (address => uint) balances;\n" +
-        " function metaCoin() {\n" +
-        " balances[msg.sender] = 10000;\n" +
-        " }\n" +
-        " function sendCoin(address receiver, uint amount) returns(bool successful) {\n" +
-        " if (balances[msg.sender] < amount) return false;\n" +
-        " balances[msg.sender] -= amount;\n" +
-        " balances[receiver] += amount;\n" +
-        " return true;\n" +
-        " }\n" +
-        "}";
-
-        //contract abi object
-        var contractDesc = [{
-            "name": "sendCoin(address,uint256)",
-            "type": "function",
-            "inputs": [
-            {
-            "name": "to",
-            "type": "address"
-            },
-            {
-            "name": "value",
-            "type": "uint256"
-            }
-            ]
-        }];
-
-        var contract;
-
-        //function for a simple transaction to transfer ether
-        function dataTransaction() {
-            var receiverAddress = document.querySelector('#receiverAddress').value;
-            var amount = document.querySelector('#amount').value;
-            contract.sendCoin(receiverAddress, amount);
-        };
-
-        //function to create a new contract from our source code
-        function createSolidityContract() {
-            var address = web3.eth.transact({code: web3.eth.solidity(soliditySource)});
-            contract = web3.eth.contract(address, contractDesc);
-        };
-
-        //function to send transaction using attributes from the HTML input boxes
-        function sendEther() {
-            web3.eth.transact({to: document.querySelector('#recipient').value ,value: document.querySelector('#value').value});
-        };
-        </script>
+        <title>Zeppelin dev</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
     </head>
     <body>
-        <div>
-            <div>
-                <h3>Transact Example</h3>
+        <div class="container">
+            <div class="row">
+                <h1>Zeppelin magic</h1>
+                <p class="lead">Ni vet det där bandet Led Zeppelin? Det är ju jättekul, för en zeppelinare av bly kan ju inte flyga!</p>
+                <a class="btn btn-default" href="#" id="deploy-github">Deploy from Github</a>
+                <a class="btn btn-default" href="#" id="deploy-local">Deploy local</a>
             </div>
-            <div>
-                <input id="recipient" type="text" placeholder="To">
-                <input id="value" type="text" placeholder="Value in Wei">
-            </div>
-            <div>
-                <button onclick="sendEther();">Send Ether</button>
-            </div>
-            <div>
-                <h3>Create a contract</h3>
-            </div>
-            <div>
-                <button onclick="createSolidityContract();">Create Solidity Coin Contract</button>
-            </div>
-            <div>
-                <h3>Send some coins</h3>
-            </div>
-            <div>
-                <input id="receiverAddress" class="form-control" type="text" placeholder="Receiver address"></input><br>
-                <input id="amount" class="form-control" type="text" placeholder="Amount"></input><br>
-            </div>
-            <button onclick="dataTransaction();">Send transaction</button>
         </div>
-        <div>
-            Put in addresses prefixed with '0x' and hit 'Send transaction'
-        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="js/zeppelin.js"></script>
     </body>
 </html>
 
