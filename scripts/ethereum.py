@@ -18,5 +18,5 @@ source = open("contracts/WorkerDispatcher.sol", "r").read()
 compiled = eth.compileSolidity(source)
 address = eth.sendTransaction(compiled)
 addressFile = open("js/address.js", "w")
-addressFile.write("var contractAddress = " + address + ";")
-print address
+addressFile.write("var contractAddress = \"" + address + "\";")
+
