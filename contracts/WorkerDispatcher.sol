@@ -34,6 +34,12 @@ contract WorkerDispatcher {
         if (workersInfo[worker].name == "") return;
         WorkAgreement wa = new WorkAgreement(msg.sender, worker,
                                              price, lenght);
+        // TODO - create better way to asign testers
+        for (uint i = 1; i < 3; i++) {
+            uint n = uint(block.blockhash(block.number - i)) % numWorkers;
+            if (workerList[n] == worker) continue;
+            wa.addTester(workerList[n]);
+        }
         return wa;
     }
 
