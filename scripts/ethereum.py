@@ -16,4 +16,4 @@ class EthereumAPI:
 eth = EthereumAPI()
 source = open("contracts/WorkerDispatcher.sol", "r").read()
 compiled = eth.compileSolidity(source)
-eth.sendTransaction(compiled)
+print eth.sendTransaction(compiled)
