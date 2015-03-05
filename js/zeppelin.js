@@ -21,7 +21,30 @@ web3.eth.watch('pending').changed(function(){
 });
 
 var generateMethodForms = function() {
-    contractStructure.foreach(function(item){
-
-    });
+    for (var i=0; i<contractStructure.length; i++) {
+        item = contractStructure[i];
+        if (item["type"] === "function" && !item["constant"]) {
+            var form = document.createElement("form");
+            var h1 = document.createElement("h1");
+            h1.innerText = item["name"];
+            form.appendChild(h1);
+            for (var j=0; j<item["inputs"].length; j++) {
+                param = item["inputs"][j];
+                var description = document.createElement("span");
+                description.innerText = param["name"] + " :: " + param["type"];
+                form.appendChild(description);
+                form.appendChild(document.createElement("br"));
+                var input = document.createElement("input");
+                input.setAttribute("type", "text");
+                input.setAttribute("name", param["name"]);
+                form.appendChild(input);
+                form.appendChild(document.createElement("br"));
+            }
+            var submit = document.createElement("input");
+            submit.setAttribute("type", "submit");
+            form.appendChild(submit);
+            document.getElementById("methods").appendChild(form);
+        }
+    }
 };
+generateMethodForms();
