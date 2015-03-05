@@ -20,3 +20,8 @@ web3.eth.watch('pending').changed(function(){
   document.getElementById('contractAddress').innerText = contractAddress;
 });
 
+var generateMethodForms = function() {
+    contractStructure.foreach(function(item){
+
+    });
+};
