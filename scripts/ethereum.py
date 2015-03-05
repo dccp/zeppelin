@@ -16,4 +16,7 @@ class EthereumAPI:
 eth = EthereumAPI()
 source = open("contracts/WorkerDispatcher.sol", "r").read()
 compiled = eth.compileSolidity(source)
-print eth.sendTransaction(compiled)
+address = eth.sendTransaction(compiled)
+addressFile = open("js/address.js", "w")
+addressFile.write("var contractAddress = " + address + ";")
+print address
