@@ -1,12 +1,13 @@
-import json, ethereumJSON
+import ethereumJSON
 
 class EthereumAPI:
 
     def __init__(self):
         self.json = ethereumJSON.EthereumJSON()
 
+    # TODO: change to eth_sendTransaction
     def sendTransaction(self, code):
-        return self.json.sendJSONRequest("eth_sendTransaction", json.dumps({"code":code}))
+        return self.json.sendJSONRequest("eth_transact", {"code":code})
 
     # TODO: change to eth_compileSolidity
     def compileSolidity(self, contract):
@@ -15,4 +16,4 @@ class EthereumAPI:
 eth = EthereumAPI()
 source = open("contracts/WorkerDispatcher.sol", "r").read()
 compiled = eth.compileSolidity(source)
-print eth.sendTransaction(compiled)
+eth.sendTransaction(compiled)
