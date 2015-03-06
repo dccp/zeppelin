@@ -1,4 +1,3 @@
-
 var contract = web3.eth.contract(contractAddress, contractStructure);
 
 $( "#deploy-local" ).click(function() {
@@ -21,6 +20,10 @@ web3.eth.watch('pending').changed(function(){
   document.getElementById('latestBlockTimestamp').innerText = Date(timeStamp);
   document.getElementById('contractAddress').innerText = contractAddress;
 });
+
+var pageLoad = function() {
+    generateMethodForms();
+}
 
 var generateMethodForms = function() {
     for (var i=0; i<contractStructure.length; i++) {
@@ -50,7 +53,6 @@ var generateMethodForms = function() {
         }
     }
 };
-generateMethodForms();
 
 var parseForm = function(form) {
     var method = form.getElementsByTagName("h1")[0].innerText;
