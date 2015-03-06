@@ -13,9 +13,6 @@ var generateMethodForms = function() {
             if (item["type"] === "function" && !item["constant"]) {
                 var form = document.createElement("form");
                 form.setAttribute("onsubmit", "event.preventDefault(); return parseForm(this);");
-                var h1 = document.createElement("h1");
-                h1.innerText = item["name"];
-                form.appendChild(h1);
                 for (var j=0; j<item["inputs"].length; j++) {
                     param = item["inputs"][j];
                     var description = document.createElement("span");
@@ -31,13 +28,38 @@ var generateMethodForms = function() {
                 var submit = document.createElement("input");
                 submit.setAttribute("type", "submit");
                 form.appendChild(submit);
-                document.getElementById("methods").appendChild(form);
+                makeCollapsibleAndAppend(i, item["name"], form);
             }
         }
 
         document.head.removeChild(structureScript);
-    }, 1);
+    }, 10);
 };
+
+var makeCollapsibleAndAppend = function(id, title, content) {
+    id = String.fromCharCode(97 + id);
+    var heading = document.createElement("div");
+    heading.setAttribute("class", "panel-heading");
+    var h4 = document.createElement("h4");
+    h4.setAttribute("class", "panel-title");
+    var a = document.createElement("a");
+    a.setAttribute("href", "#collapse" + id);
+    a.setAttribute("data-toggle", "collapse");
+    a.setAttribute("data-target", "#collapse" + id);
+    a.setAttribute("class", "collapsed");
+    a.innerText = title;
+    h4.appendChild(a);
+    heading.appendChild(h4);
+    var collapse = document.createElement("div");
+    collapse.setAttribute("id", "collapse" + id);
+    collapse.setAttribute("class", "panel-collapse collapse");
+    var body = document.createElement("div");
+    body.setAttribute("class", "panel-body");
+    body.appendChild(content);
+    collapse.appendChild(body);
+    document.getElementById("methods").appendChild(heading);
+    document.getElementById("methods").appendChild(collapse);
+}
 
 var parseForm = function(form) {
     var method = form.getElementsByTagName("h1")[0].innerText;
@@ -72,6 +94,6 @@ var sendToContract = function(method, params) {
         paramsString = paramsString.substring(1);
 
         eval("contract." + method + "(" + paramsString + ");");
-    }, 1);
+    }, 10);
 }
 
