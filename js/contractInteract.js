@@ -15,18 +15,19 @@ var generateMethodForms = function() {
                 form.setAttribute("onsubmit", "event.preventDefault(); return parseForm(this);");
                 for (var j=0; j<item["inputs"].length; j++) {
                     param = item["inputs"][j];
-                    var description = document.createElement("span");
-                    description.innerText = param["name"] + " :: " + param["type"];
-                    form.appendChild(description);
+                    var label = document.createElement("label");
+                    label.innerText = param["name"] + " :: " + param["type"];
+                    form.appendChild(label);
                     form.appendChild(document.createElement("br"));
                     var input = document.createElement("input");
                     input.setAttribute("type", "text");
-                    input.setAttribute("name", param["name"]);
+                    input.setAttribute("class", "form-control");
                     form.appendChild(input);
                     form.appendChild(document.createElement("br"));
                 }
                 var submit = document.createElement("input");
                 submit.setAttribute("type", "submit");
+                submit.setAttribute("class", "btn btn-default");
                 form.appendChild(submit);
                 makeCollapsibleAndAppend(i, item["name"], form);
             }
