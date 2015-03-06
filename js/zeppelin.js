@@ -71,7 +71,7 @@ var parseForm = function(form) {
 var sendToContract = function(method, params) {
     var paramsString = "";
     for (var i=0; i<params.length; i++) {
-        paramsString += "," + params[i];
+        paramsString += ",\"" + params[i] + "\"";
     }
     paramsString = paramsString.substring(1);
     eval("contract." + method + "(" + paramsString + ");");
