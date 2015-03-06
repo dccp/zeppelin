@@ -29,7 +29,13 @@ var generateMethodForms = function() {
                 submit.setAttribute("type", "submit");
                 submit.setAttribute("class", "btn btn-default");
                 form.appendChild(submit);
-                makeCollapsibleAndAppend(i, item["name"], form);
+                var returnString = "";
+                for (var j=0; j<item["outputs"].length; j++) {
+                    returnString += ", " + item["outputs"][j]["name"] + " :: " + item["outputs"][j]["type"];
+                }
+                var returnString = "{" + returnString.substring(2) + "}";
+                var title = item["name"] + " :: " + returnString;
+                makeCollapsibleAndAppend(i, title, form);
             }
         }
 
