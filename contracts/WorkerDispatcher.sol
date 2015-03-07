@@ -29,11 +29,12 @@ contract WorkerDispatcher {
     mapping (uint => address) workerList;
 
     function buyContract(address worker, uint redundancy, uint price,
-                         uint lenght) returns (address addr) {
-        if (msg.value < lenght * price) return;
-        if (workersInfo[worker].name == "") return;
+                         uint length) returns (address addr) {
+        if (msg.value < length * price &&
+            workersInfo[worker].name == "" &&
+            workersInfo[worker].maxLength < length) return;
         WorkAgreement wa = new WorkAgreement(msg.sender, worker,
-                                             price, lenght);
+                                             price, length);
         // TODO - create better way to asign testers
         for (uint i = 1; i < 3; i++) {
             uint n = uint(block.blockhash(block.number - i)) % numWorkers;
