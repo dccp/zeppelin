@@ -17,5 +17,8 @@ web3.eth.watch('pending').changed(function(){
   var timeStamp = web3.eth.block(blockNumber).timestamp;
   document.getElementById('latestBlockTimestamp').innerText = Date(timeStamp);
   document.getElementById('contractAddress').innerText = contractAddress;
+  var contractString = JSON.stringify(web3.eth.storageAt(contractAddress));
+  console.log("sdf: " + contractString);
+  document.getElementById('contractStorage').innerText = contractString;
 });
 
