@@ -13,6 +13,10 @@ var generateMethodForms = function() {
             if (item["type"] === "function" && !item["constant"]) {
                 var form = document.createElement("form");
                 form.setAttribute("onsubmit", "event.preventDefault(); return parseForm(this);");
+                var method = document.createElement("input");
+                method.setAttribute("type", "hidden");
+                method.setAttribute("value", item["name"]);
+                form.appendChild(method);
                 for (var j=0; j<item["inputs"].length; j++) {
                     param = item["inputs"][j];
                     var label = document.createElement("label");
@@ -69,12 +73,14 @@ var makeCollapsibleAndAppend = function(id, title, content) {
 }
 
 var parseForm = function(form) {
-    var method = form.getElementsByTagName("h1")[0].innerText;
-    method = method.substring(0, method.indexOf("("));
+    var method;
     var params = [];
     var inputs = form.getElementsByTagName("input");
     for (var i=0; i<inputs.length; i++) {
-        if (inputs[i].getAttribute("type") !== "submit") {
+        if (inputs[i].getAttribute("type") === "hidden") {
+            method = inputs[i].value;
+        }
+        else if (inputs[i].getAttribute("type") !== "submit") {
             params[params.length] = inputs[i].value;
         }
     }
