@@ -6,17 +6,65 @@
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-        <script src="js/contractInteract.js"></script>
+        <script src="js/contractAddress.js"></script>
+        <script src="js/contractStructure.js"></script>
+        <script src="bower_components/bignumber.js/bignumber.min.js"></script>
+        <script src="bower_components/ethereum.js/dist/ethereum.min.js"></script>
     </head>
-    <body onload="pageLoad();">
+    <body>
         <div class="container">
             <div class="page-header">
               <h1>WorkerDispatcher interaction <small>Frontend for Workers-ish</small></h1>
               <a class="btn btn-default" href="index.html">« Back to info</a>
             </div>
-            <div id="methods" class="row panel panel-default">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Register as worker</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form onsubmit="event.preventDefault();">
+                                <div class="form-group">
+                                    <label class="control-label">Pubkey</label>
+                                    <p class="form-control-static" id="registerCoinbase">Pubkey address</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxLength">Max length</label>
+                                    <input type="text" class="form-control" id="maxLength" placeholder="Max worklength in blocks"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="workerPrice">Price</label>
+                                    <input type="text" class="form-control" id="workerPrice" placeholder="Willing to work for">
+                                </div>
+                                <div class="form-group">
+                                    <label for="workerName">Worker name</label>
+                                    <input type="text" class="form-control" id="workerName" placeholder="Buy cheap viagra!">
+                                </div>
+                                <button id="registerWorker" class="btn btn-primary">Register worker</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Change worker price</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form onsubmit="event.preventDefault();">
+                                <div class="form-group">
+                                    <label for="newWorkerPrice">Price</label>
+                                    <input type="text" class="form-control" id="newWorkerPrice" placeholder="Willing to work for">
+                                </div>
+                                <button id="changePrice" class="btn btn-primary">Change price</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <script src="js/contractInteract.js"></script>
     </body>
 </html>
 
