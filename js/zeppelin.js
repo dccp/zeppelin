@@ -24,6 +24,11 @@ web3.eth.watch('pending').changed(function(){
     var numWorkers = workerDispatcher.numWorkers();
     $('#numWorkers').text(numWorkers);
 
-    var info = workerDispatcher.workersInfo(workerDispatcher.workerList(0));
-    console.log(info);
+    $('#workerId').bind('input', function() {
+        var id = $('#workerId').val();
+        console.log(id);
+        var info = workerDispatcher.workersInfo(workerDispatcher.workerList(id));
+        console.log(info);
+        $('#workerInfo').text(info);
+    });
 });
