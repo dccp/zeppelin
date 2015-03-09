@@ -4,6 +4,8 @@ web3.setProvider(new web3.providers.HttpSyncProvider());
 var workerDispatcher = web3.eth.contract(contractAddress, contractStructure);
 var numWorkers = workerDispatcher.numWorkers();
 
+var contract = web3.eth.contract(contractAddress, contractStructure);
+
 web3.eth.watch('chain').changed(function(){
     var coinbase = web3.eth.coinbase;
     $('#coinbase').text(coinbase);
@@ -30,12 +32,12 @@ web3.eth.watch('pending').changed(function(){
 
 $('#workerMaxLength').bind('input', findWorker);
 $('#workerPrice').bind('input', findWorker);
-
 function findWorker() {
-    var workers = [];
+    var workers = {};
     var workersLeft = numWorkers;
     for (var i=0; workersLeft > 0; i++) {
-        var info = workerDispatcher.workersInfo(workerDispatcher.workerList(i));
+        var address = workerDispatcher.workerList(i);
+        var info = workerDispatcher.workersInfo(address);
         if (info == ["", 0, 0]) {
             continue;
         }
@@ -44,17 +46,23 @@ function findWorker() {
         var price = $('#workerPrice').val();
         if ((parseInt(length) < parseInt(info[1]) || length === "")
                 && (parseInt(price) > parseInt(info[2]) || price === "")) {
-            workers[workers.length] = info[0];
+            workers[address] = info[0];
         }
         workersLeft--;
     }
 
     $('#worker')
         .empty();
-    $.each(workers, function(index, worker) {
+    $.each(workers, function(key, value) {
          $('#worker')
              .append($("<option></option>")
-             .attr("value",worker)
-             .text(worker));
+             .attr("value", key)
+             .text(value));
     });
 }
+
+$('#buyContract').click(function() {
+    var worker = $('#worker').val();
+    var redundency = $('#redundency').val();
+    contract.buyContract(worker, redundency);
+});
