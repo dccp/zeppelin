@@ -8,7 +8,7 @@ web3.eth.watch('chain').changed(function(){
     var coinbase = web3.eth.coinbase;
     $('#coinbase').text(coinbase);
     var accounts = web3.eth.accounts;
-    $('#accounts').text(accounts);
+    $('#accounts').text(accounts.toString().replace(/,/g, '\n'));
     var balance = web3.eth.balanceAt(coinbase);
     $('#balance').text(web3.toDecimal(balance));
 });
