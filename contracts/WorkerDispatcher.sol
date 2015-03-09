@@ -45,7 +45,9 @@ contract WorkerDispatcher {
     }
 
     function registerWorker(uint maxLength, uint price, string32 name) {
-        workerList[numWorkers++] = msg.sender;
+        if (workersInfo[msg.sender].name == "") {
+            workerList[numWorkers++] = msg.sender;
+        }
         Worker w = workersInfo[msg.sender];
         w.name = name;
         w.maxLength = maxLength;
