@@ -25,7 +25,7 @@ contract WorkerDispatcher {
         uint price;
     }
     mapping (address => Worker) public workersInfo;
-    uint numWorkers;
+    uint public numWorkers;
     mapping (uint => address) public workerList;
 
     function buyContract(address worker, uint redundancy, uint price,

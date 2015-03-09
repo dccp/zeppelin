@@ -20,7 +20,10 @@ web3.eth.watch('pending').changed(function(){
     var contractString = JSON.stringify(web3.eth.storageAt(contractAddress));
     $('#contractStorage').text(contractString);
 
-    var contract = web3.eth.contract(contractAddress, contractStructure);
-    var info = contract.workersInfo("hej");
+    var workerDispatcher = web3.eth.contract(contractAddress, contractStructure);
+    var numWorkers = workerDispatcher.numWorkers();
+    $('#numWorkers').text(numWorkers);
+
+    var info = workerDispatcher.workersInfo(workerDispatcher.workerList(0));
     console.log(info);
 });
