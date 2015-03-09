@@ -28,10 +28,33 @@ web3.eth.watch('pending').changed(function(){
     $('#numWorkers').text(numWorkers);
 });
 
-$('#workerId').bind('input', function() {
-    var id = $('#workerId').val();
-    console.log(id);
-    var info = workerDispatcher.workersInfo(workerDispatcher.workerList(id));
-    console.log(info);
-    $('#workerInfo').text(info);
-});
+$('#workerMaxLength').bind('input', findWorker);
+$('#workerPrice').bind('input', findWorker);
+
+function findWorker() {
+    var workers = [];
+    var workersLeft = numWorkers;
+    for (var i=0; workersLeft > 0; i++) {
+        var info = workerDispatcher.workersInfo(workerDispatcher.workerList(i));
+        if (info == ["", 0, 0]) {
+            continue;
+        }
+
+        var length = $('#workerMaxLength').val();
+        var price = $('#workerPrice').val();
+        if ((parseInt(length) < parseInt(info[1]) || length === "")
+                && (parseInt(price) > parseInt(info[2]) || price === "")) {
+            workers[workers.length] = info[0];
+        }
+        workersLeft--;
+    }
+
+    $('#worker')
+        .empty();
+    $.each(workers, function(index, worker) {
+         $('#worker')
+             .append($("<option></option>")
+             .attr("value",worker)
+             .text(worker));
+    });
+}
