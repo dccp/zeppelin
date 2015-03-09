@@ -19,4 +19,8 @@ web3.eth.watch('pending').changed(function(){
 
     var contractString = JSON.stringify(web3.eth.storageAt(contractAddress));
     $('#contractStorage').text(contractString);
+
+    var contract = web3.eth.contract(contractAddress, contractStructure);
+    var info = contract.workersInfo("hej");
+    console.log(info);
 });
