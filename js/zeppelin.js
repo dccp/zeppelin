@@ -30,6 +30,7 @@ web3.eth.watch('pending').changed(function(){
     $('#numWorkers').text(numWorkers);
 });
 
+findWorker();
 $('#workerMaxLength').bind('input', findWorker);
 $('#workerPrice').bind('input', findWorker);
 function findWorker() {
