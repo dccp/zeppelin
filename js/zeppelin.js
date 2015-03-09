@@ -30,30 +30,25 @@ web3.eth.watch('pending').changed(function(){
     $('#numWorkers').text(numWorkers);
 });
 
-findWorker();
-$('#workerMaxLength').bind('input', findWorker);
-$('#workerPrice').bind('input', findWorker);
-function findWorker() {
+findWorkers();
+$('#workerMaxLength').bind('input', findWorkers);
+$('#workerPrice').bind('input', findWorkers);
+function findWorkers() {
     var workers = {};
-    var workersLeft = numWorkers;
-    for (var i=0; workersLeft > 0; i++) {
+    for (var i=0, workersLeft=numWorkers; workersLeft > 0; i++) {
         var address = workerDispatcher.workerList(i);
         var info = workerDispatcher.workersInfo(address);
-        if (info == ["", 0, 0]) {
-            continue;
-        }
-
         var length = $('#workerMaxLength').val();
         var price = $('#workerPrice').val();
-        if ((parseInt(length) < parseInt(info[1]) || length === "")
-                && (parseInt(price) > parseInt(info[2]) || price === "")) {
+        if ((parseInt(length) <= parseInt(info[1]) || length === "")
+                && (parseInt(price) >= parseInt(info[2]) || price === "")) {
             workers[address] = info[0];
+        } else if (info != ["", 0, 0]) {
+            workersLeft--;
         }
-        workersLeft--;
     }
 
-    $('#worker')
-        .empty();
+    $('#worker').empty();
     $.each(workers, function(key, value) {
          $('#worker')
              .append($("<option></option>")
