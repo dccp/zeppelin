@@ -37,3 +37,8 @@ compiled = compile_solidity(eth_json, source)
 address = send_transaction(eth_json, compiled)
 addressFile = open("js/contractAddress.js", "w")
 addressFile.write("var contractAddress = \"" + address + "\";")
+
+# TODO - parse output from:
+# solc --input-file WorkerDispatcher.sol --json-abi stdout
+# should be two variables, workerDispatcherStruct and workAgreementStruct
+
