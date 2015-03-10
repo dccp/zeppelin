@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Zeppelin React</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/JSXTransformer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="bower_components/bignumber.js/bignumber.min.js"></script>
+        <script src="bower_components/ethereum.js/dist/ethereum.min.js"></script>
+    </head>
+    <body>
+        <div id="content"></div>
+        <script type="text/jsx">
+            var web3 = require('web3');
+            web3.setProvider(new web3.providers.HttpSyncProvider());
+
+            var InfoBox = React.createClass({
+                getInitialState: function() {
+                    return {data: "0x1337"}
+                },
+                componentDidMount: function() {
+                    this.setState({data: web3.eth.coinbase});
+                },
+                render: function() {
+                    return (
+                      <div className="panel">
+                        <h1>
+                          Hello blockchain!
+                        </h1>
+                        <EthInfo desc="Coinbase">
+                          {this.state.data}
+                        </EthInfo>
+                      </div>
+                    );
+                }
+            });
+            var EthInfo = React.createClass({
+                render: function() {
+                    return (
+                      <div className="item">
+                          <p>
+                            {this.props.desc}
+                          </p>
+                          <p>
+                            {this.props.children}
+                          </p>
+                      </div>
+                    );
+                }
+            })
+            React.render(
+              <InfoBox />,
+              document.getElementById('content')
+            );
+        </script>
+    </body>
+</html>
