@@ -16,10 +16,16 @@
 
             var InfoBox = React.createClass({
                 getInitialState: function() {
-                    return {data: "0x1337"}
+                    return {coinbase: "0x1337"}
                 },
                 componentDidMount: function() {
-                    this.setState({data: web3.eth.coinbase});
+                    var that = this;
+                    web3.eth.watch('pending').changed(function(){
+                        that.setState({
+                          coinbase: web3.eth.coinbase,
+                          blockNumber: web3.eth.number
+                        });
+                    })
                 },
                 render: function() {
                     return (
@@ -28,7 +34,10 @@
                           Hello blockchain!
                         </h1>
                         <EthInfo desc="Coinbase">
-                          {this.state.data}
+                          {this.state.coinbase}
+                        </EthInfo>
+                        <EthInfo desc="Blocknumber">
+                          {this.state.blockNumber}
                         </EthInfo>
                       </div>
                     );
