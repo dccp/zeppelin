@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Zeppelin React</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.12.2/JSXTransformer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -16,29 +17,42 @@
 
             var InfoBox = React.createClass({
                 getInitialState: function() {
-                    return {coinbase: "0x1337"}
+                    return {
+                        pending: [
+                            {"key": "Block number", "value": ""},
+                            {"key": "Timestamp", "value": ""},
+                            {"key": "Hash", "value": ""}
+                        ]
+                    }
                 },
                 componentDidMount: function() {
                     var that = this;
                     web3.eth.watch('pending').changed(function(){
+                        var blockNumber = web3.eth.number;
                         that.setState({
-                          coinbase: web3.eth.coinbase,
-                          blockNumber: web3.eth.number
+                          pending: [
+                            {"key": "Block number", "value": blockNumber},
+                            {"key": "Timestamp", "value": Date(web3.eth.block(blockNumber).timestamp).toString()},
+                            {"key": "Hash", "value": web3.eth.block(blockNumber).hash},
+                          ]
                         });
                     })
                 },
                 render: function() {
+                    var pendingNodes = this.state.pending.map(function (item) {
+                      return (
+                        <EthInfo desc={item.key}>
+                          {item.value}
+                        </EthInfo>
+                      );
+                    });
                     return (
-                      <div className="panel">
+                      <div className="container">
                         <h1>
                           Hello blockchain!
                         </h1>
-                        <EthInfo desc="Coinbase">
-                          {this.state.coinbase}
-                        </EthInfo>
-                        <EthInfo desc="Blocknumber">
-                          {this.state.blockNumber}
-                        </EthInfo>
+                        Look at me, I'm using react!
+                        {pendingNodes}
                       </div>
                     );
                 }
@@ -47,12 +61,12 @@
                 render: function() {
                     return (
                       <div className="item">
-                          <p>
-                            {this.props.desc}
-                          </p>
-                          <p>
-                            {this.props.children}
-                          </p>
+                          <h5>
+                            {this.props.desc + ": "}
+                            <strong>
+                                {this.props.children}
+                            </strong>
+                          </h5>
                       </div>
                     );
                 }
