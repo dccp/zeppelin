@@ -15,7 +15,7 @@ let App = React.createClass({
           <ul>
             <li><Link to="app">Dashboard</Link></li>
           </ul>
-          Logged in as Jane
+          Here we should display the pubkey...
         </header>
 
         {/* this is the important part */}
@@ -29,7 +29,7 @@ let Dashboard = React.createClass({
     render() {
         return (
             <p>
-            Yes, hello
+            Render things...
             <InfoBox />
             </p>
         );
