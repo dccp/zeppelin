@@ -4,10 +4,10 @@ if (typeof web3 === 'undefined') {
 }
 web3.setProvider(new web3.providers.HttpSyncProvider());
 
-var EthClient = function() {
+let EthClient = function() {
     this.getCoinbase = function(success, failure) {
         try {
-            var coinbase = web3.eth.coinbase;
+            let coinbase = web3.eth.coinbase;
             success(coinbase);
         }
         catch (e) {

@@ -1,14 +1,14 @@
-var React = require('react')
-var Router = require('react-router'); // or var Router = ReactRouter; in browsers
-var InfoBox = require('./infobox.jsx')
+import React from "react";
+import Router from "react-router";
+import InfoBox from "./components/infobox.jsx";
 
-var DefaultRoute = Router.DefaultRoute;
-var Link = Router.Link;
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
+let DefaultRoute = Router.DefaultRoute;
+let Link = Router.Link;
+let Route = Router.Route;
+let RouteHandler = Router.RouteHandler;
 
-var App = React.createClass({
-  render: function () {
+let App = React.createClass({
+  render() {
     return (
       <div>
         <header>
@@ -25,8 +25,8 @@ var App = React.createClass({
   }
 });
 
-var Dashboard = React.createClass({
-    render: function() {
+let Dashboard = React.createClass({
+    render() {
         return (
             <p>
             Yes, hello
@@ -36,7 +36,7 @@ var Dashboard = React.createClass({
     }
 });
 
-var routes = (
+let routes = (
   <Route name="app" path="/" handler={App}>
     <DefaultRoute handler={Dashboard}/>
   </Route>
