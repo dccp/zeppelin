@@ -12,18 +12,9 @@ let InfoBox = React.createClass({
         }
     },
     componentDidMount() {
-        EthClient.getCoinbase(function(ok) {
-            this.updatePending(ok);
-        }.bind(this), function(error) {
-            this.updatePending(error);
+        EthClient.getChain(function(chain) {
+            this.setState(chain);
         }.bind(this));
-    },
-    updatePending(values) {
-        this.setState({
-            pending: [
-                {label: "Coinbase", value: values}
-            ]
-        })
     },
     render() {
         var pendingNodes = this.state.pending.map(function (item) {
@@ -32,13 +23,9 @@ let InfoBox = React.createClass({
           );
         });
         return (
-          <div className="container">
-            <h1>
-              Hello blockchain!
-            </h1>
-            Look at me, I'm using react!
+            <div>
             {pendingNodes}
-          </div>
+            </div>
         );
     }
 });

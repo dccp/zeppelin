@@ -1,40 +1,10 @@
 import React from "react";
 import Router from "react-router";
-import InfoBox from "./components/infobox.jsx";
+import App from "./components/App.jsx";
+import Dashboard from "./components/Dashboard.jsx";
 
 let DefaultRoute = Router.DefaultRoute;
-let Link = Router.Link;
 let Route = Router.Route;
-let RouteHandler = Router.RouteHandler;
-
-let App = React.createClass({
-  render() {
-    return (
-      <div>
-        <header>
-          <ul>
-            <li><Link to="app">Dashboard</Link></li>
-          </ul>
-          Here we should display the pubkey...
-        </header>
-
-        {/* this is the important part */}
-        <RouteHandler/>
-      </div>
-    );
-  }
-});
-
-let Dashboard = React.createClass({
-    render() {
-        return (
-            <p>
-            Render things...
-            <InfoBox />
-            </p>
-        );
-    }
-});
 
 let routes = (
   <Route name="app" path="/" handler={App}>

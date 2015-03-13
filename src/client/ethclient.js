@@ -9,7 +9,7 @@ class EthClient {
     }
 
     getCoinbase(success, failure) {
-        var coinbasePromise = new Promise((resolve, reject) => {
+        let coinbasePromise = new Promise((resolve, reject) => {
             try {
                 resolve(web3.eth.coinbase);
             }
@@ -22,6 +22,18 @@ class EthClient {
         }, function(e) {
             failure(e);
         })
+    }
+
+    getChain(success) {
+        web3.eth.watch('chain').changed(function() {
+            success({
+                pending: [
+                    {label: "Coinbase", value: web3.eth.coinbase},
+                    {label: "Accounts", value: web3.eth.accounts},
+                    {label: "Balance", value: web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase))}
+                ]
+            });
+        }.bind(web3));
     }
 }
 
