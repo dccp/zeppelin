@@ -1,5 +1,6 @@
 import React from "react";
-import InfoBox from "./infobox.jsx";
+import ChainInfoBox from "./ChainInfobox.jsx";
+import PendingInfoBox from "./PendingInfobox.jsx";
 
 let Dashboard = React.createClass({
     render() {
@@ -11,7 +12,9 @@ let Dashboard = React.createClass({
                 <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
-                        <InfoBox />
+                        <ChainInfoBox />
+                        <PendingInfoBox />
+                        <hr />
                     </div>
                 </div>
             </div>

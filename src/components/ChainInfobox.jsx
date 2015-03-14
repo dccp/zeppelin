@@ -1,10 +1,11 @@
 import React from "react";
 import EthClient from "../client/ethclient.js";
+import KeyValue from "./KeyValue.jsx";
 
 let InfoBox = React.createClass({
     getInitialState() {
         return {
-            pending: [
+            chain: [
             ]
         }
     },
@@ -14,7 +15,7 @@ let InfoBox = React.createClass({
         }.bind(this));
     },
     render() {
-        var pendingNodes = this.state.pending.map(function (item) {
+        var pendingNodes = this.state.chain.map(function (item) {
           return (
               <KeyValue label={item.label}>{item.value}</KeyValue>
           );
@@ -26,20 +27,5 @@ let InfoBox = React.createClass({
         );
     }
 });
-
-let KeyValue = React.createClass({
-    render() {
-        return (
-            <div className="item">
-              <h5>
-                {this.props.label + ": "}
-                <strong>
-                    {this.props.children}
-                </strong>
-              </h5>
-            </div>
-        );
-    }
-})
 
 export default InfoBox;

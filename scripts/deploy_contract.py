@@ -38,7 +38,7 @@ source = open("contracts/WorkerDispatcher.sol", "r").read()
 compiled = compile_solidity(eth_json, source)
 address = send_transaction(eth_json, compiled)
 addressFile = open("js/contractAddress.js", "w")
-addressFile.write("var contractAddress = \"" + address + "\";")
+addressFile.write("let contractAddress = \"" + address + "\";")
 
 # TODO - parse output from:
 # solc --input-file WorkerDispatcher.sol --json-abi stdout
