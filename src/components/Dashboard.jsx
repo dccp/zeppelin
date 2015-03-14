@@ -8,6 +8,7 @@ let Dashboard = React.createClass({
                 <h1>
                     Zeppelin Dashboard
                 </h1>
+                <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
                         <InfoBox />

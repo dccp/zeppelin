@@ -1,5 +1,6 @@
 import React from "react";
 import Router from "react-router";
+import EthClient from "../client/ethclient.js";
 
 let DefaultRoute = Router.DefaultRoute;
 let Link = Router.Link;
@@ -7,6 +8,16 @@ let Route = Router.Route;
 let RouteHandler = Router.RouteHandler;
 
 let App = React.createClass({
+  getInitialState() {
+    return {
+        coinbase: "Waiting for AZ"
+    }
+  },
+  componentDidMount() {
+    EthClient.getCoinbase(function(ok) {
+        this.setState({coinbase: ok})
+    }.bind(this));
+  },
   render() {
     return (
       <div>
@@ -24,6 +35,9 @@ let App = React.createClass({
             <div id="navbar" className="navbar-collapse collapse">
               <ul className="nav navbar-nav">
                 <li><Link to="app">Dashboard</Link></li>
+              </ul>
+              <ul className="nav navbar-nav navbar-right">
+                <li><Link to="app">{this.state.coinbase}</Link></li>
               </ul>
             </div>
           </div>

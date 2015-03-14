@@ -5,9 +5,6 @@ let InfoBox = React.createClass({
     getInitialState() {
         return {
             pending: [
-                {label: "Block number", value: ""},
-                {label: "Timestamp", value: ""},
-                {label: "Hash", value: ""}
             ]
         }
     },

@@ -8,20 +8,8 @@ class EthClient {
         web3.setProvider(new web3.providers.HttpSyncProvider());
     }
 
-    getCoinbase(success, failure) {
-        let coinbasePromise = new Promise((resolve, reject) => {
-            try {
-                resolve(web3.eth.coinbase);
-            }
-            catch (e) {
-                reject("Could not load coinbase..." + String(e));
-            }
-        });
-        coinbasePromise.then(function(coinbase) {
-            success(coinbase);
-        }, function(e) {
-            failure(e);
-        })
+    getCoinbase(success) {
+        success(web3.eth.coinbase);
     }
 
     getChain(success) {
