@@ -31,7 +31,7 @@ let NavBar = React.createClass({
         </div>
         <div id="navbar" className="navbar-collapse collapse">
           <ul className="nav navbar-nav">
-            <NavTab to="app">Dashboard</NavTab>
+            <NavTab to="dashboard">Dashboard</NavTab>
             <NavTab to="worker">Worker</NavTab>
           </ul>
           <ul className="nav navbar-nav navbar-right">

@@ -9,8 +9,9 @@ let Route = Router.Route;
 
 let routes = (
   <Route name="app" path="/" handler={App}>
-    <Route name="worker" path="worker" handler={WorkerPanel} title="Worker admin" />
     <DefaultRoute handler={Dashboard}/>
+    <Route name="worker" path="worker" handler={WorkerPanel} title="Worker admin" />
+    <Route name="dashboard" path="/" handler={Dashboard} />
   </Route>
 );
 
