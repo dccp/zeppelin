@@ -1,4 +1,5 @@
 import ContractAddress from "../fixtures/contractAddress.js";
+import ContractStructure from "../fixtures/contractStructure.js";
 
 if (typeof web3 === 'undefined') {
     var web3 = require('ethereum.js');
@@ -8,6 +9,7 @@ if (typeof web3 === 'undefined') {
 class EthClient {
     constructor() {
         web3.setProvider(new web3.providers.HttpSyncProvider());
+        this.contract = web3.eth.contract(ContractAddress, ContractStructure);
     }
 
     getCoinbase(success) {
@@ -39,6 +41,14 @@ class EthClient {
                 ]
             });
         }.bind(web3));
+    }
+
+    registerWorker(maxLength, price, name) {
+        this.contract.registerWorker(maxLength, price, name);
+    }
+
+    changeWorkerPrice(newPrice) {
+        this.contract.changeWorkerPrice(newPrice);
     }
 }
 
