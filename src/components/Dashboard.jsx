@@ -1,6 +1,6 @@
 import React from "react";
-import ChainInfoBox from "./ChainInfobox.jsx";
-import PendingInfoBox from "./PendingInfobox.jsx";
+import InfoBox from "./Infobox.jsx";
+import EthClient from "../client/ethclient.js";
 
 let Dashboard = React.createClass({
     render() {
@@ -12,8 +12,8 @@ let Dashboard = React.createClass({
                 <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
-                        <ChainInfoBox />
-                        <PendingInfoBox />
+                        <InfoBox updateLoop={EthClient.getChain}/>
+                        <InfoBox updateLoop={EthClient.getPending}/>
                         <hr />
                     </div>
                 </div>

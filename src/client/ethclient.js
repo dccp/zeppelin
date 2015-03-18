@@ -19,7 +19,7 @@ class EthClient {
     getChain(success) {
         web3.eth.watch('chain').changed(function() {
             success({
-                chain: [
+                items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
                     {label: "Balance", value: web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase))}
@@ -32,7 +32,7 @@ class EthClient {
         web3.eth.watch('pending').changed(function() {
             let latestBlock = web3.eth.number;
             success({
-                pending: [
+                items: [
                     {label: "Latest block", value: latestBlock},
                     {label: "Latest block hash", value: web3.eth.block(latestBlock).hash},
                     {label: "Latest block timestamp", value: Date(web3.eth.block(latestBlock).timestamp)},
