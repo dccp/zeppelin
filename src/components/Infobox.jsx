@@ -1,5 +1,4 @@
 import React from "react";
-import EthClient from "../client/ethclient.js";
 import KeyValue from "./KeyValue.jsx";
 
 let InfoBox = React.createClass({
