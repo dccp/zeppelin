@@ -33,6 +33,7 @@ let NavBar = React.createClass({
           <ul className="nav navbar-nav">
             <NavTab to="dashboard">Dashboard</NavTab>
             <NavTab to="worker">Worker</NavTab>
+            <NavTab to="client">Client</NavTab>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><Link to="app">{this.state.coinbase}</Link></li>
