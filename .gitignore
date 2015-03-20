@@ -3,3 +3,6 @@
 *.pyc
 
 js/contractAddress.js
+
+build/app.js
+node_modules/
