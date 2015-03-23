@@ -9,6 +9,7 @@ if (typeof web3 === 'undefined') {
 
 web3.setProvider(new web3.providers.HttpSyncProvider());
 let contract = web3.eth.contract(ContractAddress, ContractStructure);
+let identity = web3.shh.newIdentity();
 
 class EthClient {
     constructor() {
@@ -84,6 +85,22 @@ class EthClient {
         }
 
         success(workers);
+    }
+
+    sendMsg(to, data) {
+        web3.shh.post({
+            "from": identity,
+            "to": to,
+            "payload": [ web3.fromAscii(data) ],
+        });
+    }
+
+    askWorker(workerAddress, contractAddress) {
+        web3.shh.post({
+            "from": identity,
+            "topic": workerAddress,
+            "payload": [ contractAddress ],
+        });
     }
 }
 
