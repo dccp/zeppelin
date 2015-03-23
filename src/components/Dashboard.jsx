@@ -12,8 +12,8 @@ let Dashboard = React.createClass({
                 <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
-                        <InfoBox updateLoop={EthClient.getChain}/>
-                        <InfoBox updateLoop={EthClient.getPending}/>
+                        <InfoBox updateLoop={EthClient.getChain} unregister={EthClient.unregisterChain}/>
+                        <InfoBox updateLoop={EthClient.getPending} unregister={EthClient.unregisterPending}/>
                         <hr />
                     </div>
                 </div>

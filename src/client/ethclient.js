@@ -6,10 +6,12 @@ if (typeof web3 === 'undefined') {
     window.web3 = web3;
 }
 
+
+web3.setProvider(new web3.providers.HttpSyncProvider());
+let contract = web3.eth.contract(ContractAddress, ContractStructure);
+
 class EthClient {
     constructor() {
-        web3.setProvider(new web3.providers.HttpSyncProvider());
-        this.contract = web3.eth.contract(ContractAddress, ContractStructure);
     }
 
     getCoinbase(success) {
@@ -29,6 +31,7 @@ class EthClient {
     }
 
     getPending(success) {
+        let workers = contract.numWorkers();
         web3.eth.watch('pending').changed(function() {
             let latestBlock = web3.eth.number;
             success({
@@ -38,17 +41,49 @@ class EthClient {
                     {label: "Latest block timestamp", value: Date(web3.eth.block(latestBlock).timestamp)},
                     {label: "Contract address", value: ContractAddress},
                     {label: "Contract storage", value: JSON.stringify(web3.eth.storageAt(ContractAddress))},
+                    {label: "Number of workers", value: workers.toString()}
                 ]
             });
         }.bind(web3));
     }
 
+    unregisterChain() {
+        web3.eth.watch('chain').uninstall();
+    }
+
+    unregisterPending() {
+        web3.eth.watch('pending').uninstall();
+    }
+
     registerWorker(maxLength, price, name) {
-        this.contract.registerWorker(maxLength, price, name);
+        contract.registerWorker(maxLength, price, name);
     }
 
     changeWorkerPrice(newPrice) {
-        this.contract.changeWorkerPrice(newPrice);
+        contract.changeWorkerPrice(newPrice);
+    }
+
+    bigNumberToInt(bigNumber) {
+        return bigNumber.c[0];
+    }
+
+    findWorkers(length, price, success) {
+        let numWorkers = this.bigNumberToInt(contract.numWorkers());
+        let workers = [];
+        for (let i = 0, workersLeft = numWorkers; workersLeft > 0; i++) {
+            let address = contract.workerList(i);
+            let info = contract.workersInfo(address);
+            let workerLength = this.bigNumberToInt(info[1]);
+            let workerPrice = this.bigNumberToInt(info[2]);
+            if (length <= workerLength && price >= workerPrice) {
+                workers[workers.length] = {pubkey: address, name: info[0], length: workerLength, price: workerPrice};
+            }
+            if (info != ["", 0, 0]) {
+                workersLeft--;
+            }
+        }
+
+        success(workers);
     }
 }
 
