@@ -4,7 +4,7 @@
   "description": "A minimal skeleton for building testable React apps using ES6.",
   "main": "src/main.jsx",
   "scripts": {
-    "watch": "npm run watch-js & npm run start",
+    "watch": "npm run watch-js & npm start",
     "watch-js": "watchify --debug src/main.jsx -o build/app.js -v",
     "build": "browserify src/main.jsx | uglifyjs --compress --mangle -o build/app.js -- -",
     "test": "mochify",
