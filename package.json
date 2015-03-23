@@ -10,12 +10,12 @@
     "test": "mochify",
     "test-watch": "mochify --watch",
     "cover": "node cover.js && cat lcov.info | coveralls && rm lcov.info",
-    "server": "node server.js",
+    "start": "node server.js",
     "clean": "rm build/app.js"
   },
   "repository": {
     "type": "git",
-    "url": "fest.com"
+    "url": "https://github.com/dccp/zeppelin"
   },
   "keywords": [
     "zeppelin",
@@ -24,9 +24,9 @@
   "author": "Name Name",
   "license": "MIT",
   "bugs": {
-    "url": "fest.com"
+    "url": "https://github.com/dccp/zeppelin/issues"
   },
-  "homepage": "fest.com",
+  "homepage": "https://github.com/dccp",
   "devDependencies": {
     "babelify": "^5.0.4",
     "browserify": "^9.0.3",

@@ -28,7 +28,7 @@ Build, obfuscate and minify with
 
 Deploy on node with
 
-    $ npm run server
+    $ npm run start
 
 Success! Node is running on localhost:8000, and expects eth/AZ on localhost:8080.
 
