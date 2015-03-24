@@ -13,7 +13,25 @@ let identity = web3.shh.newIdentity();
 
 class EthClient {
     constructor() {
+        this.identity = web3.shh.newIdentity()
+        this.topic = "yolo"
+        let options = {
+          topics: [this.topic]
+        };
+        let filter = web3.shh.filter(options);
+        filter.watch(function(m){console.log(web3.toAscii(m.payload))});
     }
+
+    post(_topic, message) {
+        web3.shh.post({
+          from: identity,
+          topics: [_topic],
+          payload: message,
+          ttl: 1000,
+          priority: 30
+        });
+    }
+
 
     getCoinbase(success) {
         success(web3.eth.coinbase);
@@ -102,5 +120,6 @@ class EthClient {
 }
 
 let ethclient = new EthClient();
+window.ethclient = ethclient;
 
 export default ethclient;
