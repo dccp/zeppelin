@@ -5,7 +5,6 @@ A decentralized marketplace for computation power
 - Frontend is dependent on eth/AZ backend
 
 ## Development limitations
-- Frontend uses browserify, which is not compatible with ethereum.js until we upgrade to v1.0.0+ and PoC-9 in our dev environment. The problem exists because the library thinks it's running on node, but it's in fact running in the browser. This can be hacked away as a workaround until we can get rid of it.
 - Frontend cannot upgrade to React v0.13 because React-router is not compatible yet.
 
 ## How do I develop?
@@ -28,7 +27,7 @@ Build, obfuscate and minify with
 
 Deploy on node with
 
-    $ npm run start
+    $ npm start
 
 Success! Node is running on localhost:8000, and expects eth/AZ on localhost:8080.
 
