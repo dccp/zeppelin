@@ -31,7 +31,7 @@ class EthClient {
           from: identity,
           topics: [_topic],
           payload: message,
-          ttl: 100,
+          ttl: 1000,
           priority: 100
         });
     }
