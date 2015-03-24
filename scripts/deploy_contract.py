@@ -31,7 +31,7 @@ def send_transaction(eth_json, code):
 
 # TODO: change to eth_compileSolidity
 def compile_solidity(eth_json, contract):
-    return eth_json.sendJSONRequest("eth_solidity", contract)
+    return eth_json.sendJSONRequest("eth_compileSolidity", contract)
 
 eth_json = EthereumJSON()
 source = open("contracts/WorkerDispatcher.sol", "r").read()

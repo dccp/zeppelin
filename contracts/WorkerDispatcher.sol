@@ -20,7 +20,7 @@ contract WorkAgreement {
 
 contract WorkerDispatcher {
     struct Worker {
-        string32 name;
+        bytes32 name;
         uint maxLength;
         uint price;
     }
@@ -45,7 +45,7 @@ contract WorkerDispatcher {
         return wa;
     }
 
-    function registerWorker(uint maxLength, uint price, string32 name) {
+    function registerWorker(uint maxLength, uint price, bytes32 name) {
         if (workersInfo[msg.sender].name == "") {
             workerList[numWorkers++] = msg.sender;
         }
