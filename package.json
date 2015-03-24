@@ -41,7 +41,7 @@
   "dependencies": {
     "bignumber.js": "^2.0.3",
     "console-polyfill": "^0.2.0",
-    "ethereum.js": "0.0.15",
+    "ethereum.js": "ethereum/ethereum.js#develop",
     "es5-shim": "^4.1.0",
     "react": "^0.12.2",
     "react-router": "^0.12.4",

@@ -7,7 +7,7 @@ if (typeof web3 === 'undefined') {
 }
 
 
-web3.setProvider(new web3.providers.HttpSyncProvider());
+web3.setProvider(new web3.providers.HttpProvider());
 let contract = web3.eth.contract(ContractAddress, ContractStructure);
 let identity = web3.shh.newIdentity();
 
@@ -20,12 +20,12 @@ class EthClient {
     }
 
     getChain(success) {
-        web3.eth.watch('chain').changed(function() {
+        web3.eth.filter('chain').watch(function() {
             success({
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
-                    {label: "Balance", value: web3.toDecimal(web3.eth.balanceAt(web3.eth.coinbase))}
+                    {label: "Balance", value: web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase))}
                 ]
             });
         }.bind(web3));
@@ -33,15 +33,15 @@ class EthClient {
 
     getPending(success) {
         let workers = contract.numWorkers();
-        web3.eth.watch('pending').changed(function() {
-            let latestBlock = web3.eth.number;
+        web3.eth.filter('pending').watch(function() {
+            let latestBlock = web3.eth.blockNumber;
             success({
                 items: [
                     {label: "Latest block", value: latestBlock},
-                    {label: "Latest block hash", value: web3.eth.block(latestBlock).hash},
-                    {label: "Latest block timestamp", value: Date(web3.eth.block(latestBlock).timestamp)},
+                    {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
+                    {label: "Latest block timestamp", value: Date(web3.eth.getBlock(latestBlock).timestamp)},
                     {label: "Contract address", value: ContractAddress},
-                    {label: "Contract storage", value: JSON.stringify(web3.eth.storageAt(ContractAddress))},
+                    {label: "Contract storage", value: JSON.stringify(web3.eth.getStorage(ContractAddress))},
                     {label: "Number of workers", value: workers.toString()}
                 ]
             });
@@ -49,11 +49,11 @@ class EthClient {
     }
 
     unregisterChain() {
-        web3.eth.watch('chain').uninstall();
+        web3.eth.filter('chain').stopWatching();
     }
 
     unregisterPending() {
-        web3.eth.watch('pending').uninstall();
+        web3.eth.filter('pending').stopWatching();
     }
 
     registerWorker(maxLength, price, name) {
