@@ -24,12 +24,10 @@ class EthereumJSON:
             return jsondata['error']
 
 
-# TODO: change to eth_sendTransaction
 def send_transaction(eth_json, code):
-    return eth_json.sendJSONRequest("eth_transact", {"code": code})
+    return eth_json.sendJSONRequest("eth_sendTransaction", {"code": code})
 
 
-# TODO: change to eth_compileSolidity
 def compile_solidity(eth_json, contract):
     return eth_json.sendJSONRequest("eth_compileSolidity", contract)
 
