@@ -13,7 +13,7 @@ let identity = web3.shh.newIdentity();
 
 class EthClient {
     constructor() {
-        this.identity = web3.shh.newIdentity()
+        this.identity = identity
     }
 
     watch(topic) {
@@ -44,6 +44,10 @@ class EthClient {
           ttl: ttl,
           priority: priority
         });
+    }
+
+    getPeerCount(success) {
+        success(web3.net.peerCount);
     }
 
 
@@ -113,22 +117,6 @@ class EthClient {
         }
 
         success(workers);
-    }
-
-    sendMsg(to, data) {
-        web3.shh.post({
-            "from": identity,
-            "to": to,
-            "payload": [ web3.fromAscii(data) ],
-        });
-    }
-
-    askWorker(workerAddress, contractAddress) {
-        web3.shh.post({
-            "from": identity,
-            "topic": workerAddress,
-            "payload": [ contractAddress ],
-        });
     }
 }
 

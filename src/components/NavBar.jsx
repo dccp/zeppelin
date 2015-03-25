@@ -11,6 +11,11 @@ let NavBar = React.createClass({
         coinbase: "Waiting for AZ"
     }
   },
+  updatePeerCount() {
+    EthClient.getPeerCount(function(peers) {
+        this.setState({peercount: peers})
+    }.bind(this));
+  },
   componentDidMount() {
     EthClient.getCoinbase(function(ok) {
         this.setState({coinbase: ok})
