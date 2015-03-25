@@ -37,7 +37,6 @@ With docker-transfer integrated in the node server, Zeppelin should be function 
 The frontend will then broker requests down to Ethereum, as well as communicate over whisper with workers and clients.
 
 ## TODO
-- Remove all the old frontend files (js/, \*.html)
 - Functionality? (Seems boring.)
 - Whisper communication
 - Docker-transfer backend integration

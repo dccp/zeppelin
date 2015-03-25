@@ -1,7 +1,7 @@
 {
-  "name": "essential-react",
-  "version": "0.1.0",
-  "description": "A minimal skeleton for building testable React apps using ES6.",
+  "name": "Zeppelin",
+  "version": "0.0.1",
+  "description": "A decentralized marketplace for computing power",
   "main": "src/main.jsx",
   "scripts": {
     "watch": "npm run watch-js & npm start",
