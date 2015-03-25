@@ -8,7 +8,7 @@ if (typeof web3 === 'undefined') {
 
 
 web3.setProvider(new web3.providers.HttpProvider());
-let contract = web3.eth.contract(ContractAddress, ContractStructure);
+let contract = web3.eth.contract(ContractAddress, ContractStructure.WorkerDispatcher);
 let identity = web3.shh.newIdentity();
 
 class EthClient {

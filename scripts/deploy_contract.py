@@ -2,6 +2,8 @@
 
 import json
 import requests
+import locale
+import subprocess
 
 
 class EthereumJSON:
@@ -31,15 +33,40 @@ def send_transaction(eth_json, code):
 def compile_solidity(eth_json, contract):
     return eth_json.sendJSONRequest("eth_compileSolidity", contract)
 
-eth_json = EthereumJSON()
-source = open("contracts/WorkerDispatcher.sol", "r").read()
-compiled = compile_solidity(eth_json, source)
-address = send_transaction(eth_json, compiled)
-addressFile = open("src/fixtures/contractAddress.js", "w")
-addressFile.write("let contractAddress = \"" + address + "\";"
-                  "\n\nexport default contractAddress")
 
-# TODO - parse output from:
-# solc --input-file WorkerDispatcher.sol --json-abi stdout
-# should be two variables, workerDispatcherStruct and workAgreementStruct
+def gen_contract_structures(filename):
+    encoding = locale.getdefaultlocale()[1]
+    output = subprocess.check_output(["solc " + filename +
+                                      " --json-abi stdout"], shell=True)
+    result = ""
+    for row in output.decode(encoding):
+        result += row.strip(' ').strip('\n')
+    result = result.split('=======')[1:]
+
+    struct = "let contractStructure = {}\n"
+    for i in range(len(result)):
+            if not i % 2:
+                struct += "contractStructure." + result[i] + " = "
+                struct += result[i+1].strip('ContractJSONABI') + '\n'
+    struct += "\nexport default contractStructure;"
+
+    structFile = open("src/fixtures/contractStructure.js", "w")
+    structFile.write(struct)
+    structFile.close()
+
+
+def gen_contract_address(filename):
+    eth_json = EthereumJSON()
+    source = open(filename, "r").read()
+    compiled = compile_solidity(eth_json, source)
+    address = send_transaction(eth_json, compiled)
+    addressFile = open("src/fixtures/contractAddress.js", "w")
+    print(address)
+    addressFile.write("let contractAddress = \"" + address + "\";"
+                      "\n\nexport default contractAddress")
+    addressFile.close()
+
+filename = "contracts/WorkerDispatcher.sol"
+gen_contract_address(filename)
+gen_contract_structures(filename)
 
