@@ -22,15 +22,25 @@ class EthClient {
         };
         let filter = web3.shh.filter(options);
         filter.watch(function(m) {
-            console.log(web3.toAscii(m.payload), "Received: " + (new Date()).toString());
+            let message = JSON.parse(web3.toAscii(m.payload));
+            let elapsed = web3.toDecimal(m.sent) - Math.floor(Date.now() / 1000);
+            console.log('---------------------------------');
+            console.log(message.msg);
+            console.log('delay:', Math.floor(elapsed / 60) + ':' + Math.floor(elapsed % 60));
+            console.log('ttl:', message.ttl, web3.toDecimal(m.ttl));
+            console.log('prio:', message.prio, web3.toDecimal(m.workProved));
         });
     }
 
     post(_topic, message, priority = 100, ttl = 1000) {
-        message = message + ", prio=" + priority + ", ttl=" + ttl + " - " + (new Date()).toString();
+        message = {
+            msg: message,
+            ttl: ttl,
+            prio: priority
+        }
         web3.shh.post({
           topics: [_topic],
-          payload: message,
+          payload: JSON.stringify(message),
           ttl: ttl,
           priority: priority
         });
