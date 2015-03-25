@@ -14,25 +14,25 @@ let identity = web3.shh.newIdentity();
 class EthClient {
     constructor() {
         this.identity = web3.shh.newIdentity()
-        this.topic = "yolo"
+    }
+
+    watch(topic) {
         let options = {
-          topics: [this.topic]
+          topics: [topic]
         };
         let filter = web3.shh.filter(options);
         filter.watch(function(m) {
-            console.log(web3.toAscii(m.payload));
-            console.log("Received: " + (new Date()).toString());
+            console.log(web3.toAscii(m.payload), "Received: " + (new Date()).toString());
         });
     }
 
-    post(_topic, message) {
-        message = message + " - " + (new Date()).toString();
+    post(_topic, message, priority = 100, ttl = 1000) {
+        message = message + ", prio=" + priority + ", ttl=" + ttl + " - " + (new Date()).toString();
         web3.shh.post({
-          from: identity,
           topics: [_topic],
           payload: message,
-          ttl: 1000,
-          priority: 100
+          ttl: ttl,
+          priority: priority
         });
     }
 
