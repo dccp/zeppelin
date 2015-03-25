@@ -41,7 +41,6 @@ class EthClient {
                     {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
                     {label: "Latest block timestamp", value: Date(web3.eth.getBlock(latestBlock).timestamp)},
                     {label: "Contract address", value: ContractAddress},
-                    {label: "Contract storage", value: JSON.stringify(web3.eth.getStorage(ContractAddress))},
                     {label: "Number of workers", value: workers.toString()}
                 ]
             });
