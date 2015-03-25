@@ -3,6 +3,7 @@ var app = express();
 
 // Serve static files
 app.use(express.static(__dirname + '/build'));
+app.use(express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 // Run server
 var server = app.listen(8000, function () {

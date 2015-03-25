@@ -5,6 +5,9 @@ import Dashboard from "./components/Dashboard.jsx";
 import WorkerPanel from "./components/WorkerPanel.jsx";
 import ClientPanel from "./components/ClientPanel.jsx";
 import WhisperPanel from "./components/WhisperPanel.jsx";
+import jQuery from "jquery";
+window.jQuery = jQuery;
+import "bootstrap";
 
 let DefaultRoute = Router.DefaultRoute;
 let Route = Router.Route;
