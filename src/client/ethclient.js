@@ -8,7 +8,7 @@ if (typeof web3 === 'undefined') {
 
 
 web3.setProvider(new web3.providers.HttpProvider());
-let contract = web3.eth.contract(ContractAddress, ContractStructure);
+let contract = web3.eth.contract(ContractAddress, ContractStructure.WorkerDispatcher);
 let identity = web3.shh.newIdentity();
 
 class EthClient {
@@ -20,22 +20,28 @@ class EthClient {
     }
 
     getChain(success) {
-        web3.eth.filter('chain').watch(function() {
-            success({
+        function createContent() {
+            return {
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
                     {label: "Balance", value: web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase))}
                 ]
-            });
-        }.bind(web3));
+            }
+        }
+
+        // This can be super-functionalized with a touch of this-magic.
+        success(createContent());
+        web3.eth.filter('chain').watch(function() {
+            success(createContent());
+        });
     }
 
     getPending(success) {
-        let workers = contract.numWorkers();
-        web3.eth.filter('pending').watch(function() {
+        function createContent() {
+            let workers = contract.numWorkers();
             let latestBlock = web3.eth.blockNumber;
-            success({
+            return {
                 items: [
                     {label: "Latest block", value: latestBlock},
                     {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
@@ -43,8 +49,12 @@ class EthClient {
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()}
                 ]
-            });
-        }.bind(web3));
+            }
+        }
+        success(createContent());
+        web3.eth.filter('pending').watch(function() {
+            success(createContent());
+        });
     }
 
     unregisterChain() {
@@ -81,6 +91,10 @@ class EthClient {
         }
 
         success(workers);
+    }
+
+    setJsonRpc(url) {
+        web3.setProvider(new web3.providers.HttpProvider(url));
     }
 
     sendMsg(to, data) {
