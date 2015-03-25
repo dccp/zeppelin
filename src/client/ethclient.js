@@ -6,10 +6,15 @@ if (typeof web3 === 'undefined') {
     window.web3 = web3;
 }
 
-
 web3.setProvider(new web3.providers.HttpProvider());
-let contract = web3.eth.contract(ContractAddress, ContractStructure.WorkerDispatcher);
-let identity = web3.shh.newIdentity();
+
+try {
+    var contract = web3.eth.contract(ContractAddress, ContractStructure.WorkerDispatcher);
+    var identity = web3.shh.newIdentity();
+}
+catch(e) {
+    console.log("Could not contact eth on localhost:8080");
+}
 
 class EthClient {
     constructor() {
