@@ -83,6 +83,10 @@ class EthClient {
         success(workers);
     }
 
+    setJsonRpc(url) {
+        web3.setProvider(new web3.providers.HttpProvider(url));
+    }
+
     sendMsg(to, data) {
         web3.shh.post({
             "from": identity,
