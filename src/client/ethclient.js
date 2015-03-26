@@ -10,9 +10,15 @@ web3.setProvider(new web3.providers.HttpProvider());
 
 class EthClient {
     constructor() {
-        let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
-        this.contract = new WorkerDispatcher(ContractAddress);
-        this.identity = web3.shh.newIdentity();
+        try {
+            var m = web3.eth.getStorageAt(ContractAddress, "0x1");
+            let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
+            this.contract = new WorkerDispatcher(ContractAddress);
+            this.identity = web3.shh.newIdentity();
+        }
+        catch(e) {
+            console.log("Could not contact localhost:8080");
+        }
     }
 
     getCoinbase(success) {
