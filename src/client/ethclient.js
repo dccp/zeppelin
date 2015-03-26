@@ -27,7 +27,7 @@ class EthClient {
         };
         let filter = web3.shh.filter(options);
         filter.watch(function(m) {
-            let message = JSON.parse(web3.toAscii(m.payload));
+            let message = JSON.parse(m.payload);
             let elapsed = Math.floor(Date.now() / 1000) - web3.toDecimal(m.sent);
             console.log('---------------------------------');
             console.log(message.msg);
