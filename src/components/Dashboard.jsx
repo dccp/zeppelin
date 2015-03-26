@@ -37,7 +37,7 @@ let Dashboard = React.createClass({
                     <div className="col-md-12">
                         <InfoBox updateLoop={EthClient.getChain.bind(EthClient)} unregister={EthClient.unregisterChain}/>
                         <InfoBox updateLoop={EthClient.getPending.bind(EthClient)} unregister={EthClient.unregisterPending}/>
-                        <KeyValue key="Peer count" label="Peer count">{this.state.peercount}</KeyValue>
+                        <KeyValue label="Peer count">{this.state.peercount}</KeyValue>
                         <hr />
                     </div>
 
