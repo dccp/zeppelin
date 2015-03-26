@@ -1,7 +1,7 @@
 {
-  "name": "essential-react",
-  "version": "0.1.0",
-  "description": "A minimal skeleton for building testable React apps using ES6.",
+  "name": "Zeppelin",
+  "version": "0.0.1",
+  "description": "A decentralized marketplace for computing power",
   "main": "src/main.jsx",
   "scripts": {
     "watch": "npm run watch-js & npm start",
@@ -40,9 +40,11 @@
   },
   "dependencies": {
     "bignumber.js": "^2.0.3",
+    "bootstrap": "^3.3.4",
     "console-polyfill": "^0.2.0",
     "ethereum.js": "ethereum/ethereum.js#develop",
     "es5-shim": "^4.1.0",
+    "jquery": "^2.1.3",
     "react": "^0.12.2",
     "react-router": "^0.12.4",
     "xhr": "^2.0.1"

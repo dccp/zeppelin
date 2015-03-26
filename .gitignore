@@ -4,5 +4,5 @@
 
 src/fixtures/contractAddress.js
 
-build/app.js
+build/
 node_modules/
