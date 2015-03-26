@@ -78,11 +78,11 @@ class EthClient {
     }
 
     findWorkers(length, price, success) {
-        let numWorkers = this.bigNumberToInt(contract.numWorkers());
+        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
-            let address = contract.workerList(i);
-            let info = contract.workersInfo(address);
+            let address = this.contract.workerList(i);
+            let info = this.contract.workersInfo(address);
             let workerLength = this.bigNumberToInt(info[1]);
             let workerPrice = this.bigNumberToInt(info[2]);
             if (length <= workerLength && price >= workerPrice) {
