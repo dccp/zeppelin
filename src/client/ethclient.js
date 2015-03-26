@@ -56,7 +56,7 @@ class EthClient {
     }
 
     getChain(success) {
-        web3.eth.filter('chain').watch(function() {
+        web3.eth.filter('latest').watch(function() {
             success({
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
@@ -84,7 +84,7 @@ class EthClient {
     }
 
     unregisterChain() {
-        web3.eth.filter('chain').stopWatching();
+        web3.eth.filter('latest').stopWatching();
     }
 
     unregisterPending() {
