@@ -9,7 +9,8 @@ if (typeof web3 === 'undefined') {
 web3.setProvider(new web3.providers.HttpProvider());
 
 try {
-    var contract = web3.eth.contract(ContractAddress, ContractStructure.WorkerDispatcher);
+    let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
+    var contract = new WorkerDispatcher(ContractAddress);
     var identity = web3.shh.newIdentity();
 }
 catch(e) {
