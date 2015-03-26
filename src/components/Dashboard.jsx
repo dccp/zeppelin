@@ -37,14 +37,14 @@ let Dashboard = React.createClass({
                     <div className="col-md-12">
                         <InfoBox updateLoop={EthClient.getChain.bind(EthClient)} unregister={EthClient.unregisterChain}/>
                         <InfoBox updateLoop={EthClient.getPending.bind(EthClient)} unregister={EthClient.unregisterPending}/>
-                        <KeyValue label="Peer count">{this.state.peercount}</KeyValue>
+                        <KeyValue key="Peer count" label="Peer count">{this.state.peercount}</KeyValue>
                         <hr />
                     </div>
 
                     <form onSubmit={this.handleJsonRpcSubmit}>
                         <div className="col-md-6">
                             <div className="form-group">
-                                <label for="jsonrpc">JSON RPC URL</label>
+                                <label htmlFor="jsonrpc">JSON RPC URL</label>
                                 <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder="localhost:8080"/>
                             </div>
                             <button type="submit" className="btn btn-primary">Change</button>
