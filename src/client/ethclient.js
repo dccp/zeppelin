@@ -8,17 +8,11 @@ if (typeof web3 === 'undefined') {
 
 web3.setProvider(new web3.providers.HttpProvider());
 
-try {
-    let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
-    var contract = new WorkerDispatcher(ContractAddress);
-    var identity = web3.shh.newIdentity();
-}
-catch(e) {
-    console.log("Could not contact eth on localhost:8080");
-}
-
 class EthClient {
     constructor() {
+        let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
+        this.contract = new WorkerDispatcher(ContractAddress);
+        this.identity = web3.shh.newIdentity();
     }
 
     getCoinbase(success) {
@@ -36,7 +30,6 @@ class EthClient {
             }
         }
 
-        // This can be super-functionalized with a touch of this-magic.
         success(createContent());
         web3.eth.filter('chain').watch(function() {
             success(createContent());
@@ -44,6 +37,7 @@ class EthClient {
     }
 
     getPending(success) {
+        let contract = this.contract;
         function createContent() {
             let workers = contract.numWorkers();
             let latestBlock = web3.eth.blockNumber;
@@ -51,7 +45,7 @@ class EthClient {
                 items: [
                     {label: "Latest block", value: latestBlock},
                     {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
-                    {label: "Latest block timestamp", value: Date(web3.eth.getBlock(latestBlock).timestamp)},
+                    {label: "Latest block timestamp", value: web3.eth.getBlock(latestBlock).timestamp},
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()}
                 ]
@@ -72,11 +66,11 @@ class EthClient {
     }
 
     registerWorker(maxLength, price, name) {
-        contract.registerWorker(maxLength, price, name);
+        this.contract.registerWorker(maxLength, price, name);
     }
 
     changeWorkerPrice(newPrice) {
-        contract.changeWorkerPrice(newPrice);
+        this.contract.changeWorkerPrice(newPrice);
     }
 
     bigNumberToInt(bigNumber) {
@@ -105,7 +99,7 @@ class EthClient {
 
     sendMsg(to, data) {
         web3.shh.post({
-            "from": identity,
+            "from": this.identity,
             "to": to,
             "payload": [ web3.fromAscii(data) ],
         });
@@ -113,7 +107,7 @@ class EthClient {
 
     askWorker(workerAddress, contractAddress) {
         web3.shh.post({
-            "from": identity,
+            "from": this.identity,
             "topic": workerAddress,
             "payload": [ contractAddress ],
         });
