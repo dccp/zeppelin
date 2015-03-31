@@ -79,6 +79,10 @@ class EthClient {
         this.contract.changeWorkerPrice(newPrice);
     }
 
+    buyContract(worker, length) {
+        console.log(this.contract.buyContract(worker, 1, length));
+    }
+
     bigNumberToInt(bigNumber) {
         return bigNumber.c[0];
     }
