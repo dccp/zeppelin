@@ -30,45 +30,45 @@ let ClientPanel = React.createClass({
         this.repopulateWorkerList(this.state.minLength, parseInt(e.target.value));
     },
 
+    submit(pubkey, price) {
+        EthClient.buyContract(pubkey, this.refs.minLength.getDOMNode().value);
+    },
+
     render() {
         let rows = this.state.workers.map(function (content) {
             return (
-               <TableRow rowContent={content}/>
+               <TableRow rowContent={content} clientPanel={this} />
             );
-        });
+        }.bind(this));
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <div className="row">
-                        <div className="col-md-12">
-                            <form className="form-inline">
-                                <div className="form-group">
-                                    <label>Minimum length</label>
-                                    <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length"/>
-                                </div>
-                                <div className="form-group">
-                                    <label>Maximum price</label>
-                                    <input className="form-control" onChange={this.changeMaxPrice} value={this.state.maxPrice} type="number" placeholder="Max price"/>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Pubkey</th>
-                                        <th>Worker name</th>
-                                        <th>Length</th>
-                                        <th>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rows}
-                                </tbody>
-                            </table>
+                    <div className="col-md-12">
+                        <div className="form-group">
+                                <label>Minimum length</label>
+                                <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length" ref="minLength" />
+                            </div>
+                            <div className="form-group">
+                                <label>Maximum price</label>
+                                <input className="form-control" onChange={this.changeMaxPrice} value={this.state.maxPrice} type="number" placeholder="Max price" ref="maxPrice" />
+                            </div>
+                            <div className="col-md-12">
+                                <table className="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pubkey</th>
+                                            <th>Worker name</th>
+                                            <th>Length</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,6 +78,10 @@ let ClientPanel = React.createClass({
 })
 
 let TableRow = React.createClass({
+    submit() {
+        this.props.clientPanel.submit(this.props.rowContent.pubkey);
+    },
+
     render() {
         return (
             <tr>
@@ -85,6 +89,9 @@ let TableRow = React.createClass({
                 <td>{this.props.rowContent.name}</td>
                 <td>{this.props.rowContent.length}</td>
                 <td>{this.props.rowContent.price}</td>
+                <td>
+                    <button className="btn btn-primary" onClick={this.submit}>Buy</button>
+                </td>
             </tr>
         );
     }

@@ -4,9 +4,6 @@ A decentralized marketplace for computation power
 ## Current limitations
 - Frontend is dependent on eth/AZ backend
 
-## Development limitations
-- Frontend cannot upgrade to React v0.13 because React-router is not compatible yet.
-
 ## How do I develop?
 First, install the dependencies with
 

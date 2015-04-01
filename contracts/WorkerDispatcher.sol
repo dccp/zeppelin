@@ -4,6 +4,12 @@ contract WorkAgreement {
     mapping (address => bool) testers;
     uint price;
     uint end;
+    // ip of worker
+    bytes32 ip;
+    // port for docker transfer
+    uint dtport;
+    // port for hosting
+    uint port;
 
     function WorkAgreement(address _client, address _worker, uint _price,
                            uint length) {
@@ -16,6 +22,14 @@ contract WorkAgreement {
     function addTester(address tester) {
         testers[tester] = true;
     }
+
+    function setWorkerProps(bytes32 _ip, uint _dtport, uint _port) {
+        if (msg.sender == worker) {
+            ip = _ip;
+            dtport = _dtport;
+            port = _port;
+        }
+    }
 }
 
 contract WorkerDispatcher {
@@ -23,6 +37,7 @@ contract WorkerDispatcher {
         bytes32 name;
         uint maxLength;
         uint price;
+        address agreement;
     }
     mapping (address => Worker) public workersInfo;
     uint public numWorkers;
@@ -36,12 +51,14 @@ contract WorkerDispatcher {
         WorkAgreement wa = new WorkAgreement(msg.sender, worker,
                                              workersInfo[worker].price,
                                              length);
+        workersInfo[worker].agreement = wa;
         // TODO - create better way to asign testers
+        /*
         for (uint i = 1; i < 3; i++) {
             uint n = uint(block.blockhash(block.number - i)) % numWorkers;
             if (workerList[n] == worker) continue;
             wa.addTester(workerList[n]);
-        }
+        }*/
         return wa;
     }
 
