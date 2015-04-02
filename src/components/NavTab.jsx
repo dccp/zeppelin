@@ -7,7 +7,7 @@ let State = Router.State;
 var NavTab = React.createClass({
     mixins: [ State ],
     render: function() {
-        let isActive = this.isActive(this.props.to, this.props.params, this.props.query);
+        let isActive = this.context.router.isActive(this.props.to, this.props.params, this.props.query);
         let className = isActive ? 'active' : '';
         return <li className={className}><Link {...this.props} /></li>;
     }
