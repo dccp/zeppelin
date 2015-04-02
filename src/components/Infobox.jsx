@@ -21,7 +21,7 @@ let InfoBox = React.createClass({
     render() {
         var pendingNodes = this.state.items.map(function (item) {
           return (
-              <KeyValue label={item.label}>{item.value}</KeyValue>
+              <KeyValue key={item.label} label={item.label}>{item.value}</KeyValue>
           );
         });
         return (

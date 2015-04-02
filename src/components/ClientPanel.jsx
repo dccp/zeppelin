@@ -61,7 +61,7 @@ let ClientPanel = React.createClass({
     render() {
         let rows = this.state.workers.map(function (content) {
             return (
-               <TableRow rowContent={content} clientPanel={this} />
+               <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
             );
         }.bind(this));
         return (
