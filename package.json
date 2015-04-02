@@ -29,6 +29,7 @@
   "homepage": "https://github.com/dccp",
   "devDependencies": {
     "babelify": "^5.0.4",
+    "body-parser": "^1.12.2",
     "browserify": "^9.0.3",
     "coveralls": "^2.11.2",
     "expect.js": "^0.3.1",
