@@ -81,14 +81,21 @@ class EthClient {
 
     buyContract(worker, redundancy, price, length) {
         let options = {
-            from: web3.eth.coinbase,
             value: length * price,
-            to: ContractAddress
+            gas: 500000
         };
-        console.log(options);
+
+        let callback = function(error, result) {
+            if(!error) {
+                console.log("async");
+                console.log(result)
+            } else
+                console.error(error);
+        };
 
         try {
-            let result = this.contract.sendTransaction(options).buyContract(worker, redundancy, length);
+            let result = this.contract.sendTransaction(options, callback).buyContract(worker, redundancy, length);
+            console.log("sync");
             console.log(result);
         } catch(e) {
             console.error(String(e));
