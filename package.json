@@ -10,7 +10,7 @@
     "test": "mochify",
     "test-watch": "mochify --watch",
     "cover": "node cover.js && cat lcov.info | coveralls && rm lcov.info",
-    "start": "node server.js",
+    "start": "babel-node server.js",
     "clean": "rm build/app.js"
   },
   "repository": {
@@ -28,10 +28,12 @@
   },
   "homepage": "https://github.com/dccp",
   "devDependencies": {
+    "babel": "^4.7.16",
     "babelify": "^5.0.4",
     "body-parser": "^1.12.2",
     "browserify": "^9.0.3",
     "coveralls": "^2.11.2",
+    "docker-transform": "dccp/docker-transfer#dev",
     "expect.js": "^0.3.1",
     "express": "^4.12.2",
     "mochify": "^2.6.0",
