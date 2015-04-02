@@ -31,7 +31,8 @@ let ClientPanel = React.createClass({
     },
 
     submit(pubkey, price) {
-        EthClient.buyContract(pubkey, this.refs.minLength.getDOMNode().value);
+        let length = this.refs.minLength.getDOMNode().value;
+        EthClient.buyContract(pubkey, 1, price, length);
     },
 
     render() {
@@ -80,7 +81,8 @@ let ClientPanel = React.createClass({
 
 let TableRow = React.createClass({
     submit() {
-        this.props.clientPanel.submit(this.props.rowContent.pubkey);
+        this.props.clientPanel.submit(this.props.rowContent.pubkey,
+                                      this.props.rowContent.price);
     },
 
     render() {

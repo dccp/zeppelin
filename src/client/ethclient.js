@@ -79,8 +79,20 @@ class EthClient {
         this.contract.changeWorkerPrice(newPrice);
     }
 
-    buyContract(worker, length) {
-        console.log(this.contract.buyContract(worker, 1, length));
+    buyContract(worker, redundancy, price, length) {
+        let options = {
+            from: web3.eth.coinbase,
+            value: length * price,
+            to: ContractAddress
+        };
+        console.log(options);
+
+        try {
+            let result = this.contract.sendTransaction(options).buyContract(worker, redundancy, length);
+            console.log(result);
+        } catch(e) {
+            console.error(String(e));
+        }
     }
 
     bigNumberToInt(bigNumber) {
