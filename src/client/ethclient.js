@@ -84,22 +84,14 @@ class EthClient {
             value: length * price,
             gas: 500000
         };
+        this.contract.sendTransaction(options).buyContract(worker, redundancy, length);
 
-        let callback = function(error, result) {
-            if(!error) {
-                console.log("async");
-                console.log(result)
-            } else
-                console.error(error);
-        };
-
-        try {
-            let result = this.contract.sendTransaction(options, callback).buyContract(worker, redundancy, length);
-            console.log("sync");
-            console.log(result);
-        } catch(e) {
-            console.error(String(e));
-        }
+        let filter = web3.eth.filter('chain');
+        filter.watch(function() {
+                let workAgreement = this.contract.workersInfo(worker)[3];
+                console.log(workAgreement);
+                filter.stopWatching();
+            }.bind(this));
     }
 
     bigNumberToInt(bigNumber) {
