@@ -31,7 +31,8 @@ let ClientPanel = React.createClass({
     },
 
     submit(pubkey, price) {
-        EthClient.buyContract(pubkey, this.refs.minLength.getDOMNode().value);
+        let length = this.refs.minLength.getDOMNode().value;
+        EthClient.buyContract(pubkey, 1, price, length);
     },
 
     render() {
@@ -45,8 +46,8 @@ let ClientPanel = React.createClass({
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-group">
+                        <div className="col-md-4">
+                            <div className="form-group">
                                 <label>Minimum length</label>
                                 <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length" ref="minLength" />
                             </div>
@@ -54,21 +55,22 @@ let ClientPanel = React.createClass({
                                 <label>Maximum price</label>
                                 <input className="form-control" onChange={this.changeMaxPrice} value={this.state.maxPrice} type="number" placeholder="Max price" ref="maxPrice" />
                             </div>
-                            <div className="col-md-12">
-                                <table className="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Pubkey</th>
-                                            <th>Worker name</th>
-                                            <th>Length</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rows}
-                                    </tbody>
-                                </table>
-                            </div>
+                        </div>
+                        <div className="col-md-12">
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Pubkey</th>
+                                        <th>Worker name</th>
+                                        <th>Length</th>
+                                        <th>Price</th>
+                                        <th>Interact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -79,7 +81,8 @@ let ClientPanel = React.createClass({
 
 let TableRow = React.createClass({
     submit() {
-        this.props.clientPanel.submit(this.props.rowContent.pubkey);
+        this.props.clientPanel.submit(this.props.rowContent.pubkey,
+                                      this.props.rowContent.price);
     },
 
     render() {

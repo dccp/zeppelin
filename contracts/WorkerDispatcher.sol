@@ -47,7 +47,7 @@ contract WorkerDispatcher {
                 returns (address addr) {
         if (msg.value < length * workersInfo[worker].price &&
             workersInfo[worker].name == "" &&
-            workersInfo[worker].maxLength < length) return;
+            workersInfo[worker].maxLength < length) return msg.sender;
         WorkAgreement wa = new WorkAgreement(msg.sender, worker,
                                              workersInfo[worker].price,
                                              length);

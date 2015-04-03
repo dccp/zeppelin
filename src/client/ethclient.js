@@ -114,8 +114,27 @@ class EthClient {
         this.contract.changeWorkerPrice(newPrice);
     }
 
-    buyContract(worker, length) {
-        console.log(this.contract.buyContract(worker, 1, length));
+    buyContract(worker, redundancy, price, length) {
+        let options = {
+            value: length * price,
+            gas: 500000
+        };
+
+        let callback = function(error, result) {
+            if(!error) {
+                console.log("async");
+                console.log(result)
+            } else
+                console.error(error);
+        };
+
+        try {
+            let result = this.contract.sendTransaction(options, callback).buyContract(worker, redundancy, length);
+            console.log("sync");
+            console.log(result);
+        } catch(e) {
+            console.error(String(e));
+        }
     }
 
     bigNumberToInt(bigNumber) {
