@@ -9,8 +9,20 @@ let ClientPanel = React.createClass({
             workers: [],
             minLength: 0,
             maxPrice: Number.POSITIVE_INFINITY,
-            images: ["No Docker images..."]
+	    images: []
         });
+    },
+
+    humanFileSize(bytes) {
+	var thresh = 1000;
+	if(bytes < thresh) return bytes + ' B';
+	var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+	var u = -1;
+	do {
+	    bytes /= thresh;
+	    ++u;
+	} while(bytes >= thresh);
+	return bytes.toFixed(1)+' '+units[u];
     },
 
     componentDidMount() {
@@ -36,6 +48,16 @@ let ClientPanel = React.createClass({
     changeMinLength(e) {
         this.setState({minLength: parseInt(e.target.value)});
         this.repopulateWorkerList(parseInt(e.target.value), this.state.maxPrice);
+    },
+
+    renderWorkerList() {
+	if (this.state.images.length) {
+	    return this.state.images.map((content) =>
+		(<option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>)
+	    );
+	} else {
+	    return (<option disabled="disabled">No docker images found…</option>);
+	}
     },
 
     changeMaxPrice(e) {
@@ -65,23 +87,16 @@ let ClientPanel = React.createClass({
                <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
             );
         }.bind(this));
-        let images = this.state.images.map(function (content) {
-            console.log(content);
-            return <div>
-                <KeyValue label="Created">{content.Created}</KeyValue>
-                <KeyValue label="Id">{content.Id}</KeyValue>
-                <KeyValue label="ParentId">{content.ParentId}</KeyValue>
-                <KeyValue label="Tags">{content.RepoTags}</KeyValue>
-                <KeyValue label="Size">{content.Size}</KeyValue>
-            </div>;
-        }.bind(this));
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <div className="row">
                         <div className="col-md-4">
-                            <p>{images}</p>
+			    <div className="form-group">
+				<label className="control-label">Select a docker images from your system</label>
+				<select className="form-control">{this.renderWorkerList()}</select>
+			    </div>
                             <div className="form-group">
                                 <label>Minimum length</label>
                                 <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length" ref="minLength" />

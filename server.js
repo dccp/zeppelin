@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/images', function(req, res) {
-    dockerx.client.listImages().then(json => res.json(json));
+  dockerx.client.listImages().then(json => res.json(json));
 });
 
 app.post('/transfer', function(req, res) {
