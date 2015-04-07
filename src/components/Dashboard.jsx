@@ -6,7 +6,9 @@ let Dashboard = React.createClass({
     handleJsonRpcSubmit(e) {
         e.preventDefault();
         let newUrl = this.refs.jsonRpcInput.getDOMNode().value.trim();
-        console.log(newUrl);
+        if (!newUrl.startsWith('http')) {
+            newUrl = 'http://' + newUrl;
+        }
         EthClient.setJsonRpc(newUrl);
     },
 
