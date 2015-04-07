@@ -1,6 +1,7 @@
 import React from "react";
 import EthClient from "../client/ethclient.js";
 import jquery from "jquery";
+import KeyValue from "./KeyValue.jsx";
 
 let ClientPanel = React.createClass({
     getInitialState() {
@@ -8,7 +9,7 @@ let ClientPanel = React.createClass({
             workers: [],
             minLength: 0,
             maxPrice: Number.POSITIVE_INFINITY,
-            images: "No Docker images..."
+            images: ["No Docker images..."]
         });
     },
 
@@ -64,13 +65,23 @@ let ClientPanel = React.createClass({
                <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
             );
         }.bind(this));
+        let images = this.state.images.map(function (content) {
+            console.log(content);
+            return <div>
+                <KeyValue label="Created">{content.Created}</KeyValue>
+                <KeyValue label="Id">{content.Id}</KeyValue>
+                <KeyValue label="ParentId">{content.ParentId}</KeyValue>
+                <KeyValue label="Tags">{content.RepoTags}</KeyValue>
+                <KeyValue label="Size">{content.Size}</KeyValue>
+            </div>;
+        }.bind(this));
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <div className="row">
                         <div className="col-md-4">
-                            <p>{this.state.images}</p>
+                            <p>{images}</p>
                             <div className="form-group">
                                 <label>Minimum length</label>
                                 <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length" ref="minLength" />
