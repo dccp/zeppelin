@@ -15,6 +15,7 @@ class EthClient {
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
             this.identity = web3.shh.newIdentity();
+            this.isWorker = isWorker();
         }
         catch(e) {
             console.log("Could not contact localhost:8080");
@@ -94,6 +95,7 @@ class EthClient {
 
     registerWorker(maxLength, price, name) {
         this.contract.registerWorker(maxLength, price, name);
+        this.isWorker = true;
     }
 
     changeWorkerPrice(newPrice) {
@@ -118,6 +120,16 @@ class EthClient {
 
     bigNumberToInt(bigNumber) {
         return bigNumber.c[0];
+    }
+
+    isWorker() {
+        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
+        for (let i = 0; i < numWorkers; i++) {
+            if (web3.eth.coinbase === this.contract.workerList(i)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     findWorkers(length, price, success) {
