@@ -8,16 +8,18 @@ let Link = Router.Link;
 let NavBar = React.createClass({
   getInitialState() {
     return {
-        coinbase: "Waiting for AZ"
+	coinbase: "Waiting for AZ",
+	json_rpc_url: EthClient.getJsonRPCUrl()
     }
   },
   componentDidMount() {
     EthClient.getCoinbase(function(ok) {
         this.setState({coinbase: ok})
     }.bind(this));
+    EthClient.registerListener(this.updateJsonRPCUrl);
   },
-  getJsonRPCUrl() {
-    return EthClient.getJsonRPCUrl();
+  updateJsonRPCUrl(newUrl) {
+    this.setState({json_rpc_url: newUrl});
   },
   render() {
     return (
@@ -38,7 +40,7 @@ let NavBar = React.createClass({
             <NavTab to="worker">Worker</NavTab>
             <NavTab to="client">Client</NavTab>
             <NavTab to="whisper">Whisper</NavTab>
-            <NavTab to="jsonrpc">{this.getJsonRPCUrl()}</NavTab>
+	    <NavTab to="jsonrpc">{this.state.json_rpc_url}</NavTab>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><Link to="app">{this.state.coinbase}</Link></li>

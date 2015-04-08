@@ -6,6 +6,8 @@ if (typeof web3 === 'undefined') {
     window.web3 = web3;
 }
 
+var listeners = [];
+
 class EthClient {
     constructor() {
         try {
@@ -161,6 +163,10 @@ class EthClient {
         success(workers);
     }
 
+    registerListener(callback) {
+	listeners.push(callback);
+    }
+
     getJsonRPCUrl() {
         return this._jsonRpcUrl;
     }
@@ -173,6 +179,9 @@ class EthClient {
     	if (window.localStorage) {
     	    window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
     	}
+	listeners.forEach((func) => {
+	    func(this._jsonRpcUrl);
+	});
     	web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
     }
 
