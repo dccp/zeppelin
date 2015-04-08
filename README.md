@@ -29,11 +29,13 @@ Deploy on node with
 Success! Node is running on localhost:8000, and expects eth/AZ on localhost:8080.
 
 ## Check the status of a mini-Zeppelin
-Switch JSON-RPC provider to `http://[rekoils url]:404[1|2|3]`. The url will be reset to localhost as soon as you refres the browser.
+The status is available on bobchain.companyname.website.
 
-Zeppelin SSH: 122x
-Zeppelin RPC: 404x
-Zeppelin DEVP2P: 3030x
+Protocol | Port
+---------|-----
+SSH      | 122x
+JSON-RPC | 404x
+DEVP2P   | 3030x
 
 ## What is going on here?
 The frontend is powered by react, written in ES6.
