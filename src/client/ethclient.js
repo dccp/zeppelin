@@ -77,7 +77,7 @@ class EthClient {
                     },
                     {
                         label: "Latest block timestamp",
-                        value: web3.eth.getBlock(latestBlock).timestamp
+                        value: Date(web3.eth.getBlock(latestBlock).timestamp)
                     },
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()}
