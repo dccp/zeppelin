@@ -25,16 +25,28 @@ class EthClient {
         success(web3.eth.coinbase);
     }
 
+    formatBalance(wei) {
+        let unit = 'wei';
+
+        if (wei > 10e18) {
+            unit = 'ether';
+        } else if (wei > 10e15) {
+            unit = 'finney';
+        }
+
+        return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
+    }
+
     getChain(success) {
-        function createContent() {
+        var createContent = function() {
             return {
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
-                    {label: "Balance", value: web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase))}
+                    {label: "Balance", value: this.formatBalance(web3.eth.getBalance())}
                 ]
             }
-        }
+        }.bind(this);
 
         success(createContent());
         web3.eth.filter('chain').watch(function() {
