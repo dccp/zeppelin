@@ -23,7 +23,7 @@ class EthClient {
             this.isWorker = isWorker();
         }
         catch(e) {
-	    console.err(e);
+            console.err(e);
             console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
@@ -93,9 +93,9 @@ class EthClient {
     }
 
     unregisterAll() {
-	web3.reset();
-	// web3.eth.filter('chain').stopWatching();
-	// web3.eth.filter('pending').stopWatching();
+        web3.reset();
+        // web3.eth.filter('chain').stopWatching();
+        // web3.eth.filter('pending').stopWatching();
     }
 
     registerWorker(maxLength, price, name) {
@@ -159,11 +159,11 @@ class EthClient {
     }
 
     registerListener(callback) {
-	listeners.push(callback);
+        listeners.push(callback);
     }
 
     unregisterListener(callback) {
-	listeners = listeners.filter((a) => a != callback);
+        listeners = listeners.filter((a) => a != callback);
     }
 
     getJsonRPCUrl() {
@@ -178,9 +178,9 @@ class EthClient {
         if (window.localStorage) {
             window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
         }
-	listeners.forEach((func) => {
-	    func(this._jsonRpcUrl);
-	});
+        listeners.forEach((func) => {
+            func(this._jsonRpcUrl);
+        });
         web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
     }
 

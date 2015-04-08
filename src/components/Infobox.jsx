@@ -4,11 +4,11 @@ import KeyValue from "./KeyValue.jsx";
 let InfoBox = React.createClass({
     getInitialState() {
         return {
-	    items: []
+        items: []
         }
     },
     componentDidMount() {
-	// console.log("load loop!");
+        // console.log("load loop!");
         this.props.updateLoop(function(items) {
             this.setState(items);
         }.bind(this));
