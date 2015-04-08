@@ -29,7 +29,7 @@ Deploy on node with
 Success! Node is running on localhost:8000, and expects eth/AZ on localhost:8080.
 
 ## Check the status of a mini-Zeppelin
-The status is available on bobchain.companyname.website.
+The status is available on http://zep.qng.se.
 
 Protocol | Port
 ---------|-----
