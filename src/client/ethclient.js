@@ -6,13 +6,15 @@ if (typeof web3 === 'undefined') {
     window.web3 = web3;
 }
 
-var jsonRpc = "http://localhost:8080";
-
-web3.setProvider(new web3.providers.HttpProvider());
-
 class EthClient {
     constructor() {
         try {
+    	    let url = null;
+    	    if (window.localStorage && window.localStorage.getItem('rpc_url')) {
+    		  url = window.localStorage.getItem('rpc_url');
+    	    }
+    	    this.setJsonRPCUrl(url || 'http://localhost:8080');
+
             var m = web3.eth.getStorageAt(ContractAddress, "0x1");
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
@@ -20,7 +22,7 @@ class EthClient {
             this.isWorker = isWorker();
         }
         catch(e) {
-            console.log("Could not contact localhost:8080");
+	       console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
     getCoinbase(success) {
@@ -94,6 +96,11 @@ class EthClient {
         web3.eth.filter('pending').stopWatching();
     }
 
+    unregisterAll() {
+	this.unregisterPending();
+	this.unregisterChain();
+    }
+
     registerWorker(maxLength, price, name) {
         this.contract.registerWorker(maxLength, price, name);
         this.isWorker = true;
@@ -154,6 +161,7 @@ class EthClient {
         success(workers);
     }
 
+<<<<<<< HEAD
     setJsonRpc(url) {
         web3.setProvider(new web3.providers.HttpProvider(url));
         jsonRpc = url;
@@ -161,6 +169,21 @@ class EthClient {
 
     getJsonRpc(success) {
         success(jsonRpc);
+=======
+    getJsonRPCUrl() {
+	return this._jsonRpcUrl;
+    }
+
+    setJsonRPCUrl(url) {
+	if (!url.startsWith('http')) {
+	    url = 'http://' + url;
+	}
+	this._jsonRpcUrl = url;
+	if (window.localStorage) {
+	    window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
+	}
+	web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
+>>>>>>> localStorage saved jsonrpc url
     }
 
     sendMsg(to, data) {
