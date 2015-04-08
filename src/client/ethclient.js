@@ -17,7 +17,7 @@ class EthClient {
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
             this.identity = web3.shh.newIdentity();
-
+            this.isWorker = isWorker();
         }
         catch(e) {
             console.log("Could not contact localhost:8080");
@@ -27,16 +27,31 @@ class EthClient {
         success(web3.eth.coinbase);
     }
 
+    formatBalance(wei) {
+        let unit = 'wei';
+
+        if (wei > 10e18) {
+            unit = 'ether';
+        } else if (wei > 10e15) {
+            unit = 'finney';
+        }
+
+        return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
+    }
+
     getChain(success) {
-        function createContent() {
+        var createContent = function() {
             return {
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
-                    {label: "Balance", value: web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase))}
+                    {
+                        label: "Balance",
+                        value: this.formatBalance(web3.eth.getBalance())
+                    }
                 ]
             }
-        }
+        }.bind(this);
 
         success(createContent());
         web3.eth.filter('chain').watch(function() {
@@ -52,8 +67,14 @@ class EthClient {
             return {
                 items: [
                     {label: "Latest block", value: latestBlock},
-                    {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
-                    {label: "Latest block timestamp", value: web3.eth.getBlock(latestBlock).timestamp},
+                    {
+                        label: "Latest block hash",
+                        value: web3.eth.getBlock(latestBlock).hash
+                    },
+                    {
+                        label: "Latest block timestamp",
+                        value: web3.eth.getBlock(latestBlock).timestamp
+                    },
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()}
                 ]
@@ -75,6 +96,7 @@ class EthClient {
 
     registerWorker(maxLength, price, name) {
         this.contract.registerWorker(maxLength, price, name);
+        this.isWorker = true;
     }
 
     changeWorkerPrice(newPrice) {
@@ -86,7 +108,8 @@ class EthClient {
             value: length * price,
             gas: 500000
         };
-        this.contract.sendTransaction(options).buyContract(worker, redundancy, length);
+        this.contract.sendTransaction(options).buyContract(worker, redundancy,
+                                                           length);
 
         let filter = web3.eth.filter('chain');
         filter.watch(function() {
@@ -100,6 +123,16 @@ class EthClient {
         return bigNumber.c[0];
     }
 
+    isWorker() {
+        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
+        for (let i = 0; i < numWorkers; i++) {
+            if (web3.eth.coinbase === this.contract.workerList(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     findWorkers(length, price, success) {
         let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
         let workers = [];
@@ -109,7 +142,12 @@ class EthClient {
             let workerLength = this.bigNumberToInt(info[1]);
             let workerPrice = this.bigNumberToInt(info[2]);
             if (length <= workerLength && price >= workerPrice) {
-                workers[workers.length] = {pubkey: address, name: info[0], length: workerLength, price: workerPrice};
+                workers[workers.length] = {
+                    pubkey: address,
+                    name: info[0],
+                    length: workerLength,
+                    price: workerPrice
+                };
             }
         }
 

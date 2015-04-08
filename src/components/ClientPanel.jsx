@@ -46,23 +46,25 @@ let ClientPanel = React.createClass({
     },
 
     changeMinLength(e) {
-        this.setState({minLength: parseInt(e.target.value)});
-        this.repopulateWorkerList(parseInt(e.target.value), this.state.maxPrice);
+        let len = parseInt(e.target.value.trim());
+        this.setState({minLength: len});
+        this.repopulateWorkerList(len, this.state.maxPrice);
     },
 
     renderWorkerList() {
-	if (this.state.images.length) {
-	    return this.state.images.map((content) =>
-		(<option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>)
-	    );
-	} else {
-	    return (<option disabled="disabled">No docker images found…</option>);
-	}
+    	if (this.state.images.length) {
+    	    return this.state.images.map((content) =>
+    		(<option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>)
+    	    );
+    	} else {
+    	    return (<option disabled="disabled">No docker images found…</option>);
+    	}
     },
 
     changeMaxPrice(e) {
-        this.setState({maxPrice: parseInt(e.target.value)});
-        this.repopulateWorkerList(this.state.minLength, parseInt(e.target.value));
+        let len = parseInt(e.target.value.trim());
+        this.setState({maxPrice: len});
+        this.repopulateWorkerList(this.state.minLength, len);
     },
 
     submit(pubkey, price) {
