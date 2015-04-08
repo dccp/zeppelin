@@ -51,7 +51,7 @@ class EthClient {
                     {label: "Accounts", value: web3.eth.accounts},
                     {
                         label: "Balance",
-                        value: this.formatBalance(web3.eth.getBalance())
+                        value: this.formatBalance(web3.eth.getBalance(web3.eth.coinbase))
                     }
                 ]
             }
