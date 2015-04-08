@@ -5,7 +5,7 @@ import EthClient from "../client/ethclient.js";
 let JsonRPC = React.createClass({
     getInitialState() {
         return {
-            json_rpc_url: 'http://localhost:8080'
+            json_rpc_url: EthClient.getJsonRPCUrl()
         };
     },
     handleJsonRpcSubmit(e) {
