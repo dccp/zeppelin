@@ -125,10 +125,10 @@ class EthClient {
 
         let filter = web3.eth.filter('chain');
         filter.watch(function() {
-                let workAgreement = this.contract.workersInfo(worker)[3];
-                console.log(workAgreement);
-                filter.stopWatching();
-            }.bind(this));
+            let workAgreement = this.contract.workersInfo(worker)[3];
+            console.log(workAgreement);
+            filter.stopWatching();
+        }.bind(this));
     }
 
     bigNumberToInt(bigNumber) {

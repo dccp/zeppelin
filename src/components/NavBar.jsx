@@ -19,7 +19,7 @@ let NavBar = React.createClass({
         EthClient.registerListener(this.updateJsonRPCUrl);
     },
     componentDidUnMount() {
-	EthClient.unregisterListener(this.updateJsonRPCUrl);
+        EthClient.unregisterListener(this.updateJsonRPCUrl);
     },
     updateJsonRPCUrl(newUrl) {
         this.setState({json_rpc_url: newUrl});
