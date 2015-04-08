@@ -43,7 +43,10 @@ class EthClient {
                 items: [
                     {label: "Coinbase", value: web3.eth.coinbase},
                     {label: "Accounts", value: web3.eth.accounts},
-                    {label: "Balance", value: this.formatBalance(web3.eth.getBalance())}
+                    {
+                        label: "Balance",
+                        value: this.formatBalance(web3.eth.getBalance())
+                    }
                 ]
             }
         }.bind(this);
@@ -62,8 +65,14 @@ class EthClient {
             return {
                 items: [
                     {label: "Latest block", value: latestBlock},
-                    {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
-                    {label: "Latest block timestamp", value: web3.eth.getBlock(latestBlock).timestamp},
+                    {
+                        label: "Latest block hash",
+                        value: web3.eth.getBlock(latestBlock).hash
+                    },
+                    {
+                        label: "Latest block timestamp",
+                        value: web3.eth.getBlock(latestBlock).timestamp
+                    },
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()}
                 ]
@@ -96,7 +105,8 @@ class EthClient {
             value: length * price,
             gas: 500000
         };
-        this.contract.sendTransaction(options).buyContract(worker, redundancy, length);
+        this.contract.sendTransaction(options).buyContract(worker, redundancy,
+                                                           length);
 
         let filter = web3.eth.filter('chain');
         filter.watch(function() {
@@ -119,7 +129,12 @@ class EthClient {
             let workerLength = this.bigNumberToInt(info[1]);
             let workerPrice = this.bigNumberToInt(info[2]);
             if (length <= workerLength && price >= workerPrice) {
-                workers[workers.length] = {pubkey: address, name: info[0], length: workerLength, price: workerPrice};
+                workers[workers.length] = {
+                    pubkey: address,
+                    name: info[0],
+                    length: workerLength,
+                    price: workerPrice
+                };
             }
         }
 
