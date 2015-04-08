@@ -11,11 +11,11 @@ var listeners = [];
 class EthClient {
     constructor() {
         try {
-    	    let url = null;
-    	    if (window.localStorage && window.localStorage.getItem('rpc_url')) {
-    		  url = window.localStorage.getItem('rpc_url');
-    	    }
-    	    this.setJsonRPCUrl(url || 'http://localhost:8080');
+            let url = null;
+            if (window.localStorage && window.localStorage.getItem('rpc_url')) {
+                url = window.localStorage.getItem('rpc_url');
+            }
+            this.setJsonRPCUrl(url || 'http://localhost:8080');
 
             var m = web3.eth.getStorageAt(ContractAddress, "0x1");
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
@@ -24,7 +24,7 @@ class EthClient {
             this.isWorker = isWorker();
         }
         catch(e) {
-	       console.log("Could not contact " + this.getJsonRPCUrl());
+            console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
     getCoinbase(success) {
@@ -99,8 +99,8 @@ class EthClient {
     }
 
     unregisterAll() {
-	this.unregisterPending();
-	this.unregisterChain();
+        this.unregisterPending();
+        this.unregisterChain();
     }
 
     registerWorker(maxLength, price, name) {
@@ -164,7 +164,7 @@ class EthClient {
     }
 
     registerListener(callback) {
-	listeners.push(callback);
+    listeners.push(callback);
     }
 
     getJsonRPCUrl() {
@@ -172,17 +172,17 @@ class EthClient {
     }
 
     setJsonRPCUrl(url) {
-    	if (!url.startsWith('http')) {
-    	    url = 'http://' + url;
-    	}
-    	this._jsonRpcUrl = url;
-    	if (window.localStorage) {
-    	    window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
-    	}
-	listeners.forEach((func) => {
-	    func(this._jsonRpcUrl);
-	});
-    	web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
+        if (!url.startsWith('http')) {
+            url = 'http://' + url;
+        }
+        this._jsonRpcUrl = url;
+        if (window.localStorage) {
+            window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
+        }
+    listeners.forEach((func) => {
+        func(this._jsonRpcUrl);
+    });
+        web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
     }
 
     sendMsg(to, data) {

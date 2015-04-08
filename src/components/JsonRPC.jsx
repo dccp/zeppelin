@@ -4,9 +4,9 @@ import EthClient from "../client/ethclient.js";
 
 let JsonRPC = React.createClass({
     getInitialState() {
-	return {
-	    json_rpc_url: 'http://localhost:8080'
-	};
+        return {
+            json_rpc_url: 'http://localhost:8080'
+        };
     },
     handleJsonRpcSubmit(e) {
         e.preventDefault();
@@ -14,10 +14,10 @@ let JsonRPC = React.createClass({
         EthClient.setJsonRPCUrl(newUrl);
     },
     componentDidMount() {
-	EthClient.registerListener(this.updateJsonRPCUrl);
+        EthClient.registerListener(this.updateJsonRPCUrl);
     },
     updateJsonRPCUrl(newUrl) {
-	this.setState({json_rpc_url: newUrl});
+        this.setState({json_rpc_url: newUrl});
     },
     render() {
         return (
@@ -29,7 +29,7 @@ let JsonRPC = React.createClass({
                     <div className="col-md-6">
                         <div className="form-group">
                             <label labelFor="jsonrpc">JSON RPC URL</label>
-			    <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder={this.state.json_rpc_url}/>
+                            <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder={this.state.json_rpc_url}/>
                         </div>
                         <button type="submit" className="btn btn-primary">Change</button>
                     </div>
