@@ -6,10 +6,7 @@ let JsonRPC = React.createClass({
     handleJsonRpcSubmit(e) {
         e.preventDefault();
         let newUrl = this.refs.jsonRpcInput.getDOMNode().value.trim();
-        if (!newUrl.startsWith('http')) {
-            newUrl = 'http://' + newUrl;
-        }
-        EthClient.setJsonRpc(newUrl);
+        EthClient.setJsonRPCUrl(newUrl);
     },
 
     render() {

@@ -161,29 +161,19 @@ class EthClient {
         success(workers);
     }
 
-<<<<<<< HEAD
-    setJsonRpc(url) {
-        web3.setProvider(new web3.providers.HttpProvider(url));
-        jsonRpc = url;
-    }
-
-    getJsonRpc(success) {
-        success(jsonRpc);
-=======
     getJsonRPCUrl() {
-	return this._jsonRpcUrl;
+        return this._jsonRpcUrl;
     }
 
     setJsonRPCUrl(url) {
-	if (!url.startsWith('http')) {
-	    url = 'http://' + url;
-	}
-	this._jsonRpcUrl = url;
-	if (window.localStorage) {
-	    window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
-	}
-	web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
->>>>>>> localStorage saved jsonrpc url
+    	if (!url.startsWith('http')) {
+    	    url = 'http://' + url;
+    	}
+    	this._jsonRpcUrl = url;
+    	if (window.localStorage) {
+    	    window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
+    	}
+    	web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
     }
 
     sendMsg(to, data) {
