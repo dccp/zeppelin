@@ -6,6 +6,8 @@ if (typeof web3 === 'undefined') {
     window.web3 = web3;
 }
 
+var jsonRpc = "http://localhost:8080";
+
 web3.setProvider(new web3.providers.HttpProvider());
 
 class EthClient {
@@ -15,12 +17,12 @@ class EthClient {
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
             this.identity = web3.shh.newIdentity();
+
         }
         catch(e) {
             console.log("Could not contact localhost:8080");
         }
     }
-
     getCoinbase(success) {
         success(web3.eth.coinbase);
     }
@@ -116,6 +118,11 @@ class EthClient {
 
     setJsonRpc(url) {
         web3.setProvider(new web3.providers.HttpProvider(url));
+        jsonRpc = url;
+    }
+
+    getJsonRpc(success) {
+        success(jsonRpc);
     }
 
     sendMsg(to, data) {
