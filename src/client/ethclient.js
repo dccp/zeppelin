@@ -20,7 +20,7 @@ class EthClient {
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
             this.identity = web3.shh.newIdentity();
-            this.isWorker = isWorker();
+            this._worker = this.isWorker();
         }
         catch(e) {
             console.err(e);
@@ -57,10 +57,18 @@ class EthClient {
             }
         }.bind(this);
 
+        var checkForWork = function() {
+            let workAgreement = this.contract.workersInfo(web3.eth.coinbase)[3];
+            console.log(workAgreement);
+        }.bind(this);
+
         success(createContent());
         web3.eth.filter('chain').watch(function() {
             success(createContent());
-        });
+            if (this._worker) {
+                checkForWork();
+            }
+        }.bind(this));
     }
 
     getPending(success) {
@@ -100,7 +108,7 @@ class EthClient {
 
     registerWorker(maxLength, price, name) {
         this.contract.registerWorker(maxLength, price, name);
-        this.isWorker = true;
+        this._worker = true;
     }
 
     changeWorkerPrice(newPrice) {
