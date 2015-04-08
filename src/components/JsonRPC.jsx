@@ -1,6 +1,7 @@
 import React from "react";
 import InfoBox from "./Infobox.jsx";
 import EthClient from "../client/ethclient.js";
+import Dashboard from "./Dashboard.jsx";
 
 let JsonRPC = React.createClass({
     getInitialState() {
@@ -29,27 +30,29 @@ let JsonRPC = React.createClass({
     render() {
         return (
             <div className="container">
-                <h1>
-                    JsonRPC Control Panel
-                </h1>
-                <form onSubmit={this.handleJsonRpcSubmit}>
-                    <div className="col-md-6">
-                        <div className="form-group">
-                            <label labelFor="jsonrpc">JSON RPC URL</label>
-                            <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder={this.state.json_rpc_url}/>
+                <div className="col-xs-8">
+                    <Dashboard />
+                </div>
+                <div className="col-xs-4">
+                    <form onSubmit={this.handleJsonRpcSubmit}>
+                        <div>
                             <div className="form-group">
-                            <label for="sel1">Predefined RPC URL</label>
-                              <select className="form-control" id="jsonrpc_predefined" ref="jsonRpcInput_predefined">
-                                <option>localhost:8080</option>
-                                <option>qng.se:4041</option>
-                                <option>qng.se:4042</option>
-                                <option>qng.se:4043</option>
-                              </select>
+                                <label labelFor="jsonrpc">JSON RPC URL</label>
+                                <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder={this.state.json_rpc_url}/>
+                                <div className="form-group">
+                                <label htmlFor="sel1">Predefined RPC URL</label>
+                                  <select className="form-control" id="jsonrpc_predefined" ref="jsonRpcInput_predefined">
+                                    <option>localhost:8080</option>
+                                    <option>qng.se:4041</option>
+                                    <option>qng.se:4042</option>
+                                    <option>qng.se:4043</option>
+                                  </select>
+                                </div>
                             </div>
+                            <button type="submit" className="btn btn-primary">Change</button>
                         </div>
-                        <button type="submit" className="btn btn-primary">Change</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         );
     }

@@ -35,14 +35,11 @@ let NavBar = React.createClass({
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                     </button>
-                    <a className="navbar-brand" href="#">Zeppelin</a>
+                    <Link to="client" className="navbar-brand">Zeppelin</Link>
                 </div>
                 <div id="navbar" className="navbar-collapse collapse">
                     <ul className="nav navbar-nav">
-                        <NavTab to="dashboard">Dashboard</NavTab>
                         <NavTab to="worker">Worker</NavTab>
-                        <NavTab to="client">Client</NavTab>
-                        <NavTab to="whisper">Whisper</NavTab>
                         <NavTab to="jsonrpc">{this.state.json_rpc_url}</NavTab>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">

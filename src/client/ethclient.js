@@ -76,7 +76,10 @@ class EthClient {
         function createContent() {
             let workers = contract.numWorkers();
             let latestBlock = web3.eth.blockNumber;
-            let m = web3.eth.getCode(ContractAddress);
+            let code = web3.eth.getCode(ContractAddress);
+            if (code.length > 50) {
+                code = code.substring(0, 60) + '…';
+            }
             return {
                 items: [
                     {label: "Latest block", value: latestBlock},
@@ -90,7 +93,7 @@ class EthClient {
                     },
                     {label: "Contract address", value: ContractAddress},
                     {label: "Number of workers", value: workers.toString()},
-                    {label: "Code", value: m}
+                    {label: "Code", value: code}
                 ]
             }
         }

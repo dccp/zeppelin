@@ -4,11 +4,11 @@ import EthClient from "../client/ethclient.js";
 
 let Dashboard = React.createClass({
     componentWillUnmount() {
-	EthClient.unregisterAll();
+	   EthClient.unregisterAll();
     },
     render() {
         return (
-            <div className="container">
+            <div>
                 <h1>
                     Zeppelin Dashboard
                 </h1>
