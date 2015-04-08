@@ -23,7 +23,7 @@ class EthClient {
             this._worker = this.isWorker();
         }
         catch(e) {
-            console.err(e);
+            console.error(e);
             console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
