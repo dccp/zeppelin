@@ -23,6 +23,7 @@ class EthClient {
             this.isWorker = isWorker();
         }
         catch(e) {
+	    console.err(e);
             console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
@@ -91,17 +92,10 @@ class EthClient {
         });
     }
 
-    unregisterChain() {
-        web3.eth.filter('chain').stopWatching();
-    }
-
-    unregisterPending() {
-        web3.eth.filter('pending').stopWatching();
-    }
-
     unregisterAll() {
-        this.unregisterPending();
-        this.unregisterChain();
+	web3.reset();
+	// web3.eth.filter('chain').stopWatching();
+	// web3.eth.filter('pending').stopWatching();
     }
 
     registerWorker(maxLength, price, name) {

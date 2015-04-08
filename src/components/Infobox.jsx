@@ -4,20 +4,19 @@ import KeyValue from "./KeyValue.jsx";
 let InfoBox = React.createClass({
     getInitialState() {
         return {
-            items: [
-            ]
+	    items: []
         }
     },
     componentDidMount() {
-        console.log("load loop!");
+	// console.log("load loop!");
         this.props.updateLoop(function(items) {
             this.setState(items);
         }.bind(this));
     },
-    componentWillUnmount() {
-        console.log("unload ethwatch!");
-        this.props.unregister();
-    },
+    // componentWillUnmount() {
+    //     console.log("unload ethwatch!");
+    //     this.props.unregister();
+    // },
     render() {
         var pendingNodes = this.state.items.map(function (item) {
           return (

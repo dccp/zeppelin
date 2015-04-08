@@ -3,6 +3,9 @@ import InfoBox from "./Infobox.jsx";
 import EthClient from "../client/ethclient.js";
 
 let Dashboard = React.createClass({
+    componentWillUnmount() {
+	EthClient.unregisterAll();
+    },
     render() {
         return (
             <div className="container">
@@ -12,8 +15,8 @@ let Dashboard = React.createClass({
                 <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
-                        <InfoBox updateLoop={EthClient.getChain.bind(EthClient)} unregister={EthClient.unregisterChain}/>
-                        <InfoBox updateLoop={EthClient.getPending.bind(EthClient)} unregister={EthClient.unregisterPending}/>
+			<InfoBox updateLoop={EthClient.getChain.bind(EthClient)} />
+			<InfoBox updateLoop={EthClient.getPending.bind(EthClient)} />
                         <hr />
                     </div>
                 </div>
