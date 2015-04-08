@@ -17,7 +17,6 @@ class EthClient {
             }
             this.setJsonRPCUrl(url || 'http://localhost:8080');
 
-            var m = web3.eth.getStorageAt(ContractAddress, "0x1");
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
             this.contract = new WorkerDispatcher(ContractAddress);
             this.identity = web3.shh.newIdentity();
@@ -68,6 +67,7 @@ class EthClient {
         function createContent() {
             let workers = contract.numWorkers();
             let latestBlock = web3.eth.blockNumber;
+            let m = web3.eth.getCode(ContractAddress);
             return {
                 items: [
                     {label: "Latest block", value: latestBlock},
@@ -80,7 +80,8 @@ class EthClient {
                         value: Date(web3.eth.getBlock(latestBlock).timestamp)
                     },
                     {label: "Contract address", value: ContractAddress},
-                    {label: "Number of workers", value: workers.toString()}
+                    {label: "Number of workers", value: workers.toString()},
+                    {label: "Code", value: m}
                 ]
             }
         }
