@@ -2,8 +2,13 @@ import ContractAddress from "../fixtures/contractAddress.js";
 import ContractStructure from "../fixtures/contractStructure.js";
 import web3 from "web3";
 import moment from "moment";
+import Q from "q";
 
 var listeners = [];
+
+web3.eth.getBalancePromise = Q.denodeify(web3.eth.getBalance);
+web3.eth.getCodePromise = Q.denodeify(web3.eth.getCode);
+web3.eth.getBlockPromise = Q.denodeify(web3.eth.getBlock);
 
 class EthClient {
     constructor() {
@@ -42,21 +47,11 @@ class EthClient {
 
     getChain(success) {
         let createContent = function() {
-            return new Promise((resolve, reject) => {
-                web3.eth.getBalance(web3.eth.coinbase, (error, balance) => {
-                    resolve({
-                        items: [
-                            {label: "Coinbase", value: web3.eth.coinbase},
-                            {label: "Accounts", value: web3.eth.accounts},
-                            {
-                                label: "Balance",
-                                value: this.formatBalance(balance),
-                                title: balance
-                            }
-                        ]
-                    });
-                });
-            });
+            return web3.eth.getBalancePromise(web3.eth.coinbase).then((balance) => [
+                {label: "Coinbase", value: web3.eth.coinbase},
+                {label: "Accounts", value: web3.eth.accounts},
+                {label: "Balance", value: this.formatBalance(balance), title: balance}
+            ]);
         }.bind(this);
 
         var checkForWork = function() {
@@ -78,31 +73,28 @@ class EthClient {
         function createContent() {
             let workers = contract.numWorkers();
             let latestBlock = web3.eth.blockNumber;
-            let code = web3.eth.getCode(ContractAddress);
-            if (code.length > 50) {
-                code = code.substring(0, 60) + '…';
-            }
-            return new Promise((resolve, reject) => {
-                web3.eth.getBlock(latestBlock, (error, block) => {
-                    let timestamp = moment.unix(block.timestamp);
-                    resolve({
-                        items: [
-                            {label: "Latest block", value: latestBlock},
-                            {
-                                label: "Latest block hash",
-                                value: block.hash
-                            },
-                            {
-                                label: "Latest block timestamp",
-                                value: timestamp.fromNow(),
-                                title: timestamp.format('llll')
-                            },
-                            {label: "Contract address", value: ContractAddress},
-                            {label: "Number of workers", value: workers.toString()},
-                            {label: "Code", value: code}
-                        ]
-                    });
-                });
+            return Q.all([
+                web3.eth.getCodePromise(ContractAddress),
+                web3.eth.getBlockPromise(latestBlock)
+            ]).then(([code, block]) => {
+
+                let timestamp = moment.unix(block.timestamp);
+                if (code.length > 50) {
+                    code = code.substring(0, 60) + '…';
+                }
+
+                return [
+                    {label: "Latest block", value: latestBlock},
+                    {label: "Latest block hash", value: block.hash},
+                    {
+                        label: "Latest block timestamp",
+                        value: timestamp.fromNow(),
+                        title: timestamp.format('llll')
+                    },
+                    {label: "Contract address", value: ContractAddress},
+                    {label: "Number of workers", value: workers.toString()},
+                    {label: "Code", value: code}
+                ];
             });
         }
         success(createContent());
@@ -131,8 +123,8 @@ class EthClient {
             value: length * price,
             gas: 500000
         };
-        this.contract.sendTransaction(options).buyContract(worker, redundancy,
-                                                           length);
+        this.contract.sendTransaction(options)
+            .buyContract(worker, redundancy, length);
 
         let filter = web3.eth.filter('chain');
         filter.watch(function() {
@@ -142,12 +134,8 @@ class EthClient {
         }.bind(this));
     }
 
-    bigNumberToInt(bigNumber) {
-        return bigNumber.c[0];
-    }
-
     isWorker() {
-        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
+        let numWorkers = this.contract.numWorkers().toNumber();
         for (let i = 0; i < numWorkers; i++) {
             if (web3.eth.coinbase === this.contract.workerList(i)) {
                 return true;
@@ -157,20 +145,22 @@ class EthClient {
     }
 
     findWorkers(length, price, success) {
-        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
+        let numWorkers = this.contract.numWorkers().toNumber();
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
-            let info = this.contract.workersInfo(address);
-            let workerLength = this.bigNumberToInt(info[1]);
-            let workerPrice = this.bigNumberToInt(info[2]);
+            let [workerName, workerLength, workerPrice] =
+                this.contract.workersInfo(address);
+            workerLength = workerLength.toNumber()
+            workerPrice = workerPrice.toNumber();
+
             if (length <= workerLength && price >= workerPrice) {
-                workers[workers.length] = {
+                workers.push({
                     pubkey: address,
-                    name: info[0],
+                    name: workerName,
                     length: workerLength,
                     price: workerPrice
-                };
+                });
             }
         }
 

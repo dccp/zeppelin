@@ -11,7 +11,7 @@ let InfoBox = React.createClass({
         // console.log("load loop!");
         this.props.updateLoop((promise) => {
             promise.then((items) => {
-                this.setState(items);
+                this.setState({items: items});
             });
         }.bind(this));
     },
