@@ -39,15 +39,15 @@ let JsonRPC = React.createClass({
                             <div className="form-group">
                                 <label labelFor="jsonrpc">JSON RPC URL</label>
                                 <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder={this.state.json_rpc_url}/>
-                                <div className="form-group">
-                                <label htmlFor="sel1">Predefined RPC URL</label>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="jsonrpc_predefined">Predefined RPC URL</label>
                                   <select className="form-control" id="jsonrpc_predefined" ref="jsonRpcInput_predefined">
                                     <option>localhost:8080</option>
                                     <option>qng.se:4041</option>
                                     <option>qng.se:4042</option>
                                     <option>qng.se:4043</option>
                                   </select>
-                                </div>
                             </div>
                             <button type="submit" className="btn btn-primary">Change</button>
                         </div>
