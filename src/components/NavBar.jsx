@@ -13,9 +13,7 @@ let NavBar = React.createClass({
         }
     },
     componentDidMount() {
-        EthClient.getCoinbase(function(ok) {
-            this.setState({coinbase: ok})
-        }.bind(this));
+        this.setState({coinbase: EthClient.getCoinbase()})
         EthClient.registerListener(this.updateJsonRPCUrl);
     },
     componentDidUnMount() {

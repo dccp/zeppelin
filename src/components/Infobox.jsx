@@ -4,32 +4,19 @@ import KeyValue from "./KeyValue.jsx";
 let InfoBox = React.createClass({
     getInitialState() {
         return {
-        items: []
-        }
+            items: []
+        };
     },
     componentDidMount() {
-        // console.log("load loop!");
-        this.props.updateLoop((promise) => {
-            promise.then((items) => {
-                this.setState({items: items});
-            });
-        }.bind(this));
+        this.props.updateLoop((promise) => promise.then((items) =>
+            this.setState({items: items})
+        ));
     },
-    // componentWillUnmount() {
-    //     console.log("unload ethwatch!");
-    //     this.props.unregister();
-    // },
     render() {
-        var pendingNodes = this.state.items.map(function (item) {
-          return (
-              <KeyValue key={item.label} label={item.label} title={item.title}>{item.value}</KeyValue>
-          );
-        });
-        return (
-            <div>
-            {pendingNodes}
-            </div>
+        var pendingNodes = this.state.items.map((item) =>
+            <KeyValue key={item.label} label={item.label} title={item.title}>{item.value}</KeyValue>
         );
+        return (<div>{pendingNodes}</div>);
     }
 });
 

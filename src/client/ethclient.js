@@ -29,8 +29,8 @@ class EthClient {
             console.log("Could not contact " + this.getJsonRPCUrl());
         }
     }
-    getCoinbase(success) {
-        success(web3.eth.coinbase);
+    getCoinbase() {
+        return web3.eth.coinbase;
     }
 
     formatBalance(wei) {
@@ -54,8 +54,8 @@ class EthClient {
             ]);
         }.bind(this);
 
-        var checkForWork = function() {
-            let workAgreement = this.contract.workersInfo(web3.eth.coinbase)[3];
+        let checkForWork = function() {
+            let workAgreement = this.contract.workersInfo(this.getCoinbase())[3];
             console.log(workAgreement);
         }.bind(this);
 
@@ -65,7 +65,7 @@ class EthClient {
             if (this._worker) {
                 checkForWork();
             }
-        }.bind(this));
+        });
     }
 
     getPending(success) {
@@ -144,27 +144,26 @@ class EthClient {
         return false;
     }
 
-    findWorkers(length, price, success) {
+    findWorkers(length, price) {
         let numWorkers = this.contract.numWorkers().toNumber();
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
-            let [workerName, workerLength, workerPrice] =
-                this.contract.workersInfo(address);
-            workerLength = workerLength.toNumber()
-            workerPrice = workerPrice.toNumber();
+            let [wName, wLength, wPrice] = this.contract.workersInfo(address);
+            wLength = wLength.toNumber()
+            wPrice = wPrice.toNumber();
 
-            if (length <= workerLength && price >= workerPrice) {
+            if (length <= wLength && price >= wPrice) {
                 workers.push({
                     pubkey: address,
-                    name: workerName,
-                    length: workerLength,
-                    price: workerPrice
+                    name: wName,
+                    length: wLength,
+                    price: wPrice
                 });
             }
         }
 
-        success(workers);
+        return workers
     }
 
     registerListener(callback) {
@@ -195,17 +194,17 @@ class EthClient {
 
     sendMsg(to, data) {
         web3.shh.post({
-            "from": this.identity,
-            "to": to,
-            "payload": [ web3.fromAscii(data) ],
+            from: this.identity,
+            to: to,
+            payload: [ web3.fromAscii(data) ],
         });
     }
 
     askWorker(workerAddress, contractAddress) {
         web3.shh.post({
-            "from": this.identity,
-            "topic": workerAddress,
-            "payload": [ contractAddress ],
+            from: this.identity,
+            topic: workerAddress,
+            payload: [ contractAddress ],
         });
     }
 }

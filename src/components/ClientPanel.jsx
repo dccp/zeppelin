@@ -1,104 +1,89 @@
 import React from "react";
 import EthClient from "../client/ethclient.js";
-import jquery from "jquery";
+import $ from "jquery";
 import KeyValue from "./KeyValue.jsx";
 
 let ClientPanel = React.createClass({
     getInitialState() {
         return ({
-            workers: [],
             minLength: 0,
-            maxPrice: Number.POSITIVE_INFINITY,
-	    images: []
+            maxPrice: Infinity,
+            images: []
         });
     },
 
     humanFileSize(bytes) {
-	var thresh = 1000;
-	if(bytes < thresh) return bytes + ' B';
-	var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
-	var u = -1;
-	do {
-	    bytes /= thresh;
-	    ++u;
-	} while(bytes >= thresh);
-	return bytes.toFixed(1)+' '+units[u];
+        var thresh = 1000;
+        if(bytes < thresh) return bytes + ' B';
+        var units = ['kB','MB','GB','TB','PB','EB','ZB','YB'];
+        var u = -1;
+        do {
+            bytes /= thresh;
+            ++u;
+        } while(bytes >= thresh);
+    	return bytes.toFixed(1)+' '+units[u];
     },
 
     componentDidMount() {
-        this.repopulateWorkerList(null, null);
-        jquery.ajax({
-          url: "/images",
-          dataType: 'json',
-          success: function(data) {
+        $.getJSON("/images", (images) => {
             this.setState({images: data});
-          }.bind(this),
-          error: function(xhr, status, err) {
+        }).fail(() => {
             console.error(document.URL, status, err.toString());
-          }.bind(this)
         });
     },
 
-    repopulateWorkerList(length, price) {
-        EthClient.findWorkers(length || 0, price || Number.POSITIVE_INFINITY, function(json) {
-            this.setState({workers: json});
-        }.bind(this));
+    filterWorkers() {
+        return EthClient.findWorkers(this.state.minLength, this.state.maxPrice);
     },
 
     changeMinLength(e) {
         let len = parseInt(e.target.value.trim());
-        this.setState({minLength: len});
-        this.repopulateWorkerList(len, this.state.maxPrice);
+        this.setState({minLength: len || 0});
     },
 
-    renderWorkerList() {
-    	if (this.state.images.length) {
-    	    return this.state.images.map((content) =>
-    		(<option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>)
-    	    );
-    	} else {
-    	    return (<option disabled="disabled">No docker images found…</option>);
-    	}
+    renderImageList() {
+        if (this.state.images.length) {
+            return this.state.images.map((content) =>
+                <option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>
+            );
+        } else {
+            return (<option disabled="disabled">No docker images found…</option>);
+        }
     },
 
     changeMaxPrice(e) {
-        let len = parseInt(e.target.value.trim());
-        this.setState({maxPrice: len});
-        this.repopulateWorkerList(this.state.minLength, len);
+        let price = parseInt(e.target.value.trim());
+        this.setState({maxPrice: price || Infinity});
     },
 
     submit(pubkey, price) {
-        let length = this.refs.minLength.getDOMNode().value;
-        EthClient.buyContract(pubkey, 1, price, length);
-        jquery.ajax({
-          url: "/transfer",
-          type: 'POST',
-          data: {"imageHash":"someHash", "host":"someHost", "port":"somePort"},
-          success: function(data) {
+        let imageHash = this.refs.image.value;
+        EthClient.buyContract(pubkey, 1, price, this.state.minLength);
+        $.post("/transfer", {
+            imageHash: imageHash,
+            host: "someHost",
+            port:"somePort"
+        }, (data) => {
             console.log("Sent docker-xfer:" + data);
-          }.bind(this),
-          error: function(xhr, status, err) {
-            console.error(document.URL, status, err.toString());
-          }.bind(this)
+        }).fail((xhr, status, err) => {
+            console.error(document.URL, status, err.toString())
         });
     },
 
     render() {
-        let rows = this.state.workers.map(function (content) {
-            return (
-               <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
-            );
-        }.bind(this));
+        let rows = this.filterWorkers().map((content) =>
+            <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
+        );
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <div className="row">
                         <div className="col-md-4">
-			    <div className="form-group">
-				<label className="control-label">Select a docker images from your system</label>
-				<select className="form-control">{this.renderWorkerList()}</select>
-			    </div>
+                            <div className="form-group">
+                                <label className="control-label">Select a docker images from your system</label>
+                                <select className="form-control" ref="image">{this.renderImageList()}</select>
+                            </div>
                             <div className="form-group">
                                 <label>Minimum length</label>
                                 <input className="form-control" onChange={this.changeMinLength} value={this.state.minLength} type="number" placeholder="Min length" ref="minLength" />
