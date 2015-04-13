@@ -9,8 +9,10 @@ let InfoBox = React.createClass({
     },
     componentDidMount() {
         // console.log("load loop!");
-        this.props.updateLoop(function(items) {
-            this.setState(items);
+        this.props.updateLoop((promise) => {
+            promise.then((items) => {
+                this.setState(items);
+            });
         }.bind(this));
     },
     // componentWillUnmount() {
@@ -20,7 +22,7 @@ let InfoBox = React.createClass({
     render() {
         var pendingNodes = this.state.items.map(function (item) {
           return (
-              <KeyValue key={item.label} label={item.label}>{item.value}</KeyValue>
+              <KeyValue key={item.label} label={item.label} title={item.title}>{item.value}</KeyValue>
           );
         });
         return (

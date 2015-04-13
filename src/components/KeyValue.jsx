@@ -6,7 +6,7 @@ let KeyValue = React.createClass({
             <div className="item">
               <h5>
                 {this.props.label + ": "}
-                <strong>
+                <strong title={this.props.title}>
                     {this.props.children}
                 </strong>
               </h5>

@@ -12,7 +12,7 @@ let JsonRPC = React.createClass({
     handleJsonRpcSubmit(e) {
         e.preventDefault();
         let newUrl = this.refs.jsonRpcInput.getDOMNode().value.trim();
-        if(newUrl == ""){
+        if(!newUrl){
             newUrl = this.refs.jsonRpcInput_predefined.getDOMNode().value;
         }
         console.log("Changing JSONRPC host to: " + newUrl);

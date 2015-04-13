@@ -1,5 +1,6 @@
 import ContractAddress from "../fixtures/contractAddress.js";
 import ContractStructure from "../fixtures/contractStructure.js";
+import moment from "moment";
 
 if (typeof web3 === 'undefined') {
     var web3 = require('ethereum.js');
@@ -44,17 +45,22 @@ class EthClient {
     }
 
     getChain(success) {
-        var createContent = function() {
-            return {
-                items: [
-                    {label: "Coinbase", value: web3.eth.coinbase},
-                    {label: "Accounts", value: web3.eth.accounts},
-                    {
-                        label: "Balance",
-                        value: this.formatBalance(web3.eth.getBalance(web3.eth.coinbase))
-                    }
-                ]
-            }
+        let createContent = function() {
+            return new Promise((resolve, reject) => {
+                web3.eth.getBalance(web3.eth.coinbase, (error, balance) => {
+                    resolve({
+                        items: [
+                            {label: "Coinbase", value: web3.eth.coinbase},
+                            {label: "Accounts", value: web3.eth.accounts},
+                            {
+                                label: "Balance",
+                                value: this.formatBalance(balance),
+                                title: balance
+                            }
+                        ]
+                    });
+                });
+            });
         }.bind(this);
 
         var checkForWork = function() {
@@ -63,7 +69,7 @@ class EthClient {
         }.bind(this);
 
         success(createContent());
-        web3.eth.filter('chain').watch(function() {
+        web3.eth.filter('chain').watch(() => {
             success(createContent());
             if (this._worker) {
                 checkForWork();
@@ -80,22 +86,27 @@ class EthClient {
             if (code.length > 50) {
                 code = code.substring(0, 60) + '…';
             }
-            return {
-                items: [
-                    {label: "Latest block", value: latestBlock},
-                    {
-                        label: "Latest block hash",
-                        value: web3.eth.getBlock(latestBlock).hash
-                    },
-                    {
-                        label: "Latest block timestamp",
-                        value: Date(web3.eth.getBlock(latestBlock).timestamp)
-                    },
-                    {label: "Contract address", value: ContractAddress},
-                    {label: "Number of workers", value: workers.toString()},
-                    {label: "Code", value: code}
-                ]
-            }
+            return new Promise((resolve, reject) => {
+                web3.eth.getBlock(latestBlock, (error, block) => {
+                    resolve({
+                        items: [
+                            {label: "Latest block", value: latestBlock},
+                            {
+                                label: "Latest block hash",
+                                value: block.hash
+                            },
+                            {
+                                label: "Latest block timestamp",
+                                value: moment.unix(block.timestamp).fromNow(),
+                                title: Date(block.timestamp)
+                            },
+                            {label: "Contract address", value: ContractAddress},
+                            {label: "Number of workers", value: workers.toString()},
+                            {label: "Code", value: code}
+                        ]
+                    });
+                });
+            });
         }
         success(createContent());
         web3.eth.filter('pending').watch(function() {
