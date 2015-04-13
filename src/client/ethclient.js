@@ -1,11 +1,7 @@
 import ContractAddress from "../fixtures/contractAddress.js";
 import ContractStructure from "../fixtures/contractStructure.js";
+import web3 from "web3";
 import moment from "moment";
-
-if (typeof web3 === 'undefined') {
-    var web3 = require('ethereum.js');
-    window.web3 = web3;
-}
 
 var listeners = [];
 
@@ -88,6 +84,7 @@ class EthClient {
             }
             return new Promise((resolve, reject) => {
                 web3.eth.getBlock(latestBlock, (error, block) => {
+                    let timestamp = moment.unix(block.timestamp);
                     resolve({
                         items: [
                             {label: "Latest block", value: latestBlock},
@@ -97,8 +94,8 @@ class EthClient {
                             },
                             {
                                 label: "Latest block timestamp",
-                                value: moment.unix(block.timestamp).fromNow(),
-                                title: Date(block.timestamp)
+                                value: timestamp.fromNow(),
+                                title: timestamp.format('llll')
                             },
                             {label: "Contract address", value: ContractAddress},
                             {label: "Number of workers", value: workers.toString()},
