@@ -50,6 +50,9 @@ let ClientPanel = React.createClass({
             return (<option disabled="disabled">No docker images found…</option>);
         }
     },
+    canBuy() {
+        return this.state.minLength !== 0;
+    },
 
     changeMaxPrice(e) {
         let price = parseInt(e.target.value.trim());
@@ -57,6 +60,9 @@ let ClientPanel = React.createClass({
     },
 
     submit(pubkey, price) {
+        if (this.state.minLength === 0) {
+            return;
+        }
         let imageHash = this.refs.image.value;
         EthClient.buyContract(pubkey, 1, price, this.state.minLength);
         $.post("/transfer", {
@@ -72,7 +78,7 @@ let ClientPanel = React.createClass({
 
     render() {
         let rows = this.filterWorkers().map((content) =>
-            <TableRow key={content.pubkey} rowContent={content} clientPanel={this} />
+            <TableRow key={content.pubkey} rowContent={content} canBuy={this.canBuy()} clientPanel={this} />
         );
         return (
             <div className="container">
@@ -130,7 +136,7 @@ let TableRow = React.createClass({
                 <td>{this.props.rowContent.length}</td>
                 <td>{this.props.rowContent.price}</td>
                 <td>
-                    <button className="btn btn-primary" onClick={this.submit}>Buy</button>
+                    <button className="btn btn-primary" disabled={!this.props.canBuy} onClick={this.submit}>Buy</button>
                 </td>
             </tr>
         );
