@@ -1,9 +1,7 @@
 import React from "react";
-import Router from "react-router";
+import {Link} from "react-router";
 import EthClient from "../client/ethclient.js";
 import NavTab from "./NavTab.jsx";
-
-let Link = Router.Link;
 
 let NavBar = React.createClass({
     getInitialState() {

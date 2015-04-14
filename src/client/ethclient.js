@@ -3,6 +3,7 @@ import ContractStructure from "../fixtures/contractStructure.js";
 import web3 from "web3";
 import moment from "moment";
 import Q from "q";
+import {Dispatcher} from "flux";
 
 var listeners = [];
 
@@ -17,6 +18,7 @@ class EthClient {
             if (window.localStorage && window.localStorage.getItem('rpc_url')) {
                 url = window.localStorage.getItem('rpc_url');
             }
+            this.dispatcher = new Dispatcher();
             this.setJsonRPCUrl(url || 'http://localhost:8080');
 
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
@@ -59,46 +61,35 @@ class EthClient {
         });
     }
 
-    formatChain([balance, code, block]) {
-        let workers = this.contract.numWorkers();
-        let timestamp = moment.unix(block.timestamp);
-        if (code.length > 50) {
-            code = code.substring(0, 60) + '…';
-        }
-
-        return [
-            {label: "Coinbase", value: this.getCoinbase()},
-            {label: "Accounts", value: web3.eth.accounts},
-            {label: "Balance", value: this.formatBalance(balance), title: balance},
-            {label: "Latest block", value: block.number},
-            {label: "Latest block hash", value: block.hash},
-            {
-                label: "Latest block timestamp",
-                value: timestamp.fromNow(),
-                title: timestamp.format('llll')
-            },
-            {label: "Contract address", value: ContractAddress},
-            {label: "Number of workers", value: workers.toString()},
-            {label: "Is worker", value: this._worker.toString()},
-            {label: "Code", value: code}
-        ];
-    }
-
-    getChain(success) {
+    getDashboard() {
         let coinbase = this.getCoinbase();
-        let createContent = function() {
-            return Q.all([
+        return Q.all([
                 web3.eth.getBalancePromise(coinbase),
                 web3.eth.getCodePromise(ContractAddress),
                 web3.eth.getBlockPromise(web3.eth.blockNumber)
-            ]).then(this.formatChain.bind(this));
-        }.bind(this);
+        ]).then(([balance, code, block]) => {
+            let workers = this.contract.numWorkers();
+            let timestamp = moment.unix(block.timestamp);
+            if (code.length > 50) {
+                code = code.substring(0, 60) + '…';
+            }
 
-        success(createContent());
-        this.chainFilter = web3.eth.filter('chain');
-
-        this.chainFilter.watch(() => {
-            success(createContent());
+            return [
+                {label: "Coinbase", value: coinbase},
+                {label: "Accounts", value: web3.eth.accounts},
+                {label: "Balance", value: this.formatBalance(balance), title: balance},
+                {label: "Latest block", value: block.number},
+                {label: "Latest block hash", value: block.hash},
+                {
+                    label: "Latest block timestamp",
+                    value: timestamp.fromNow(),
+                    title: timestamp.format('llll')
+                },
+                {label: "Contract address", value: ContractAddress},
+                {label: "Number of workers", value: workers.toString()},
+                {label: "Is worker", value: this._worker.toString()},
+                {label: "Code", value: code}
+            ];
         });
     }
 
@@ -163,6 +154,14 @@ class EthClient {
         return workers
     }
 
+    subscribe(callback) {
+        return this.dispatcher.register(callback);
+    }
+
+    unsubscribe(token) {
+        this.dispatcher.unregister(token);
+    }
+
     registerListener(callback) {
         listeners.push(callback);
     }
@@ -186,7 +185,17 @@ class EthClient {
         listeners.forEach((func) => {
             func(this._jsonRpcUrl);
         });
+        if (this.chainFilter) {
+            // web3.reset();
+            this.chainFilter.stopWatching();
+        }
         web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
+        this.chainFilter = web3.eth.filter('chain');
+
+        this.dispatcher.dispatch();
+        this.chainFilter.watch(() => {
+            this.dispatcher.dispatch();
+        });
     }
 
     sendMsg(to, data) {
