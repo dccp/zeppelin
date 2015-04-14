@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/images', function(req, res) {
-  dockerx.client.listImages().then(json => res.json(json));
+    dockerx.client.listImages().then(json => res.json(json));
 });
 
 app.post('/transfer', function(req, res) {
@@ -25,8 +25,8 @@ app.post('/transfer', function(req, res) {
 
 // Run server
 let server = app.listen(8000, function () {
-  let host = server.address().address;
-  let port = server.address().port;
+    let host = server.address().address;
+    let port = server.address().port;
 
-  console.log('Zeppelin listening at http://%s:%s', host, port);
+    console.log('Zeppelin listening at http://%s:%s', host, port);
 });
