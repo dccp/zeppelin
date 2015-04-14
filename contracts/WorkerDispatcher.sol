@@ -23,10 +23,15 @@ contract WorkAgreement {
         testers[tester] = true;
     }
 
-    function setWorkerProps(bytes32 _ip, uint _dtport, uint _port) {
+    function setWorkerIP(bytes32 _ip, uint _dtport) {
         if (msg.sender == worker) {
             ip = _ip;
             dtport = _dtport;
+        }
+    }
+
+    function setWorkerPort(uint _port) {
+        if (msg.sender == worker) {
             port = _port;
         }
     }

@@ -45,6 +45,20 @@ class EthClient {
         return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
     }
 
+    watchForWork() {
+        let checkForWork = function() {
+            let workAgreement = this.contract.workersInfo(this.getCoinbase())[3];
+            console.log(workAgreement);
+        }.bind(this);
+        console.log(this._worker);
+
+        web3.eth.filter('chain').watch(() => {
+            if (this._worker) {
+                checkForWork();
+            }
+        });
+    }
+
     formatChain([balance, code, block]) {
         let workers = this.contract.numWorkers();
         let timestamp = moment.unix(block.timestamp);
@@ -79,19 +93,11 @@ class EthClient {
             ]).then(this.formatChain.bind(this));
         }.bind(this);
 
-        let checkForWork = function() {
-            let workAgreement = this.contract.workersInfo(coinbase)[3];
-            console.log(workAgreement);
-        }.bind(this);
-
         success(createContent());
         this.chainFilter = web3.eth.filter('chain');
 
         this.chainFilter.watch(() => {
             success(createContent());
-            if (this._worker) {
-                checkForWork();
-            }
         });
     }
 

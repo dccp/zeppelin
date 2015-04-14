@@ -4,7 +4,7 @@ import EthClient from "../client/ethclient.js";
 
 let Dashboard = React.createClass({
     componentWillUnmount() {
-	   EthClient.unregisterAll();
+        EthClient.unregisterAll();
     },
     render() {
         return (
