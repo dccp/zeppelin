@@ -1,5 +1,4 @@
 import React from "react";
-import InfoBox from "./Infobox.jsx";
 import EthClient from "../client/ethclient.js";
 import Dashboard from "./Dashboard.jsx";
 

@@ -47,18 +47,15 @@ class EthClient {
         return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
     }
 
-    watchForWork() {
-        let checkForWork = function() {
-            let workAgreement = this.contract.workersInfo(this.getCoinbase())[3];
-            console.log(workAgreement);
-        }.bind(this);
-        console.log(this._worker);
-
-        web3.eth.filter('chain').watch(() => {
-            if (this._worker) {
-                checkForWork();
-            }
-        });
+    // returns a workagreement if present for the current worker
+    checkForWork() {
+        let agreementAddress = this.contract.workersInfo(this.getCoinbase())[3];
+        console.log(agreementAddress);
+        console.log(typeof agreementAddress);
+        if (web3.toDecimal(agreementAddress) != 0) {
+            let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
+            return new WorkAgreement(agreementAddress);
+        }
     }
 
     getDashboard() {
@@ -91,10 +88,6 @@ class EthClient {
                 {label: "Code", value: code}
             ];
         });
-    }
-
-    unregisterAll() {
-        this.chainFilter.stopWatching();
     }
 
     registerWorker(maxLength, price, name) {

@@ -6,8 +6,19 @@ import EthClient from "../client/ethclient.js";
 let RouteHandler = Router.RouteHandler;
 
 let App = React.createClass({
+    checkForWork() {
+        if (!this.workerWorkAgreement) {
+            this.workerWorkAgreement = EthClient.checkForWork();
+        }
+    },
     componentWillMount() {
-        EthClient.watchForWork();
+        if (EthClient.isWorker()) {
+            this.checkForWork();
+            this.token = EthClient.subscribe(this.checkForWork);
+        }
+    },
+    componentWillUnmount() {
+        EthClient.unsubscribe(this.token);
     },
     render() {
         return (

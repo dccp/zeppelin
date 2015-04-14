@@ -75,6 +75,7 @@ contract WorkerDispatcher {
         w.name = name;
         w.maxLength = maxLength;
         w.price = price;
+        w.agreement = 0;
     }
 
     function changeWorkerPrice(uint newPrice) {
