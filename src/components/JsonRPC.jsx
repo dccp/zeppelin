@@ -42,11 +42,11 @@ let JsonRPC = React.createClass({
                             </div>
                             <div className="form-group">
                                 <label htmlFor="jsonrpc_predefined">Predefined RPC URL</label>
-                                  <select className="form-control" id="jsonrpc_predefined" ref="jsonRpcInput_predefined">
-                                    <option>localhost:8080</option>
-                                    <option>qng.se:4041</option>
-                                    <option>qng.se:4042</option>
-                                    <option>qng.se:4043</option>
+                                  <select className="form-control" id="jsonrpc_predefined" defaultValue={this.state.json_rpc_url} ref="jsonRpcInput_predefined">
+                                    <option value="http://localhost:8080">localhost:8080</option>
+                                    <option value="http://qng.se:4041">qng.se:4041</option>
+                                    <option value="http://qng.se:4042">qng.se:4042</option>
+                                    <option value="http://qng.se:4043">qng.se:4043</option>
                                   </select>
                             </div>
                             <button type="submit" className="btn btn-primary">Change</button>
