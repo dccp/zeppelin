@@ -26,8 +26,8 @@ let ClientPanel = React.createClass({
 
     componentDidMount() {
         $.getJSON("/images", (images) => {
-            this.setState({images: data});
-        }).fail(() => {
+            this.setState({images: images});
+        }).fail((xhr, status, err) => {
             console.error(document.URL, status, err.toString());
         });
     },

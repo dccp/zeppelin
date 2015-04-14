@@ -46,16 +46,17 @@ class EthClient {
     }
 
     getChain(success) {
+        let coinbase = this.getCoinbase();
         let createContent = function() {
-            return web3.eth.getBalancePromise(web3.eth.coinbase).then((balance) => [
-                {label: "Coinbase", value: web3.eth.coinbase},
+            return web3.eth.getBalancePromise(coinbase).then((balance) => [
+                {label: "Coinbase", value: coinbase},
                 {label: "Accounts", value: web3.eth.accounts},
                 {label: "Balance", value: this.formatBalance(balance), title: balance}
             ]);
         }.bind(this);
 
         let checkForWork = function() {
-            let workAgreement = this.contract.workersInfo(this.getCoinbase())[3];
+            let workAgreement = this.contract.workersInfo(coinbase)[3];
             console.log(workAgreement);
         }.bind(this);
 
