@@ -79,6 +79,7 @@ class EthClient {
             },
             {label: "Contract address", value: ContractAddress},
             {label: "Number of workers", value: workers.toString()},
+            {label: "Is worker", value: this._worker.toString()},
             {label: "Code", value: code}
         ];
     }
