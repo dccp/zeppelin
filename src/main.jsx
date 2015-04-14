@@ -4,8 +4,10 @@ import App from "./components/App.jsx";
 import WorkerPanel from "./components/WorkerPanel.jsx";
 import ClientPanel from "./components/ClientPanel.jsx";
 import JsonRPC from "./components/JsonRPC.jsx";
-import jQuery from "jquery";
-window.jQuery = jQuery;
+
+// Needs to be imported and set to window.jQuery before importing bootstrap
+import $ from "jquery";
+window.$ = window.jQuery = $;
 import "bootstrap";
 
 let DefaultRoute = Router.DefaultRoute;

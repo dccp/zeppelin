@@ -14,7 +14,7 @@ let NavBar = React.createClass({
         this.setState({coinbase: EthClient.getCoinbase()})
         EthClient.registerListener(this.updateJsonRPCUrl);
     },
-    componentDidUnMount() {
+    componentWillUnMount() {
         EthClient.unregisterListener(this.updateJsonRPCUrl);
     },
     updateJsonRPCUrl(newUrl) {
