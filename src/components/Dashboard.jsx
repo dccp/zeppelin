@@ -16,7 +16,6 @@ let Dashboard = React.createClass({
                 <div className="row">
                     <div className="col-md-12">
                         <InfoBox updateLoop={EthClient.getChain.bind(EthClient)} />
-                        <InfoBox updateLoop={EthClient.getPending.bind(EthClient)} />
                         <hr />
                     </div>
                 </div>

@@ -45,14 +45,38 @@ class EthClient {
         return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
     }
 
+    formatChain([balance, code, block]) {
+        let workers = this.contract.numWorkers();
+        let timestamp = moment.unix(block.timestamp);
+        if (code.length > 50) {
+            code = code.substring(0, 60) + '…';
+        }
+
+        return [
+            {label: "Coinbase", value: this.getCoinbase()},
+            {label: "Accounts", value: web3.eth.accounts},
+            {label: "Balance", value: this.formatBalance(balance), title: balance},
+            {label: "Latest block", value: block.number},
+            {label: "Latest block hash", value: block.hash},
+            {
+                label: "Latest block timestamp",
+                value: timestamp.fromNow(),
+                title: timestamp.format('llll')
+            },
+            {label: "Contract address", value: ContractAddress},
+            {label: "Number of workers", value: workers.toString()},
+            {label: "Code", value: code}
+        ];
+    }
+
     getChain(success) {
         let coinbase = this.getCoinbase();
         let createContent = function() {
-            return web3.eth.getBalancePromise(coinbase).then((balance) => [
-                {label: "Coinbase", value: coinbase},
-                {label: "Accounts", value: web3.eth.accounts},
-                {label: "Balance", value: this.formatBalance(balance), title: balance}
-            ]);
+            return Q.all([
+                web3.eth.getBalancePromise(coinbase),
+                web3.eth.getCodePromise(ContractAddress),
+                web3.eth.getBlockPromise(web3.eth.blockNumber)
+            ]).then(this.formatChain.bind(this));
         }.bind(this);
 
         let checkForWork = function() {
@@ -61,7 +85,9 @@ class EthClient {
         }.bind(this);
 
         success(createContent());
-        web3.eth.filter('chain').watch(() => {
+        this.chainFilter = web3.eth.filter('chain');
+
+        this.chainFilter.watch(() => {
             success(createContent());
             if (this._worker) {
                 checkForWork();
@@ -69,45 +95,8 @@ class EthClient {
         });
     }
 
-    getPending(success) {
-        let contract = this.contract;
-        function createContent() {
-            let workers = contract.numWorkers();
-            let latestBlock = web3.eth.blockNumber;
-            return Q.all([
-                web3.eth.getCodePromise(ContractAddress),
-                web3.eth.getBlockPromise(latestBlock)
-            ]).then(([code, block]) => {
-
-                let timestamp = moment.unix(block.timestamp);
-                if (code.length > 50) {
-                    code = code.substring(0, 60) + '…';
-                }
-
-                return [
-                    {label: "Latest block", value: latestBlock},
-                    {label: "Latest block hash", value: block.hash},
-                    {
-                        label: "Latest block timestamp",
-                        value: timestamp.fromNow(),
-                        title: timestamp.format('llll')
-                    },
-                    {label: "Contract address", value: ContractAddress},
-                    {label: "Number of workers", value: workers.toString()},
-                    {label: "Code", value: code}
-                ];
-            });
-        }
-        success(createContent());
-        web3.eth.filter('pending').watch(function() {
-            success(createContent());
-        });
-    }
-
     unregisterAll() {
-        web3.reset();
-        // web3.eth.filter('chain').stopWatching();
-        // web3.eth.filter('pending').stopWatching();
+        this.chainFilter.stopWatching();
     }
 
     registerWorker(maxLength, price, name) {
