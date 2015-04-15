@@ -45,7 +45,7 @@ let ClientPanel = React.createClass({
     renderImageList() {
         if (this.state.images.length) {
             return this.state.images.map((content) =>
-                <option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>
+                <option value={content.Id} key={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>
             );
         } else {
             return (<option disabled="disabled" value={null}>No docker images found…</option>);
