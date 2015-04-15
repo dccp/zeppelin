@@ -16,7 +16,6 @@ class EthClient {
             if (window.localStorage && window.localStorage.getItem('rpc_url')) {
                 url = window.localStorage.getItem('rpc_url');
             }
-            this.dispatcher = new Dispatcher();
             this.setJsonRPCUrl(url || 'http://localhost:8080');
 
             let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
@@ -45,11 +44,9 @@ class EthClient {
         return (unit !== 'wei' ? web3.fromWei(wei, unit).toFormat() : wei) + ' ' + unit;
     }
 
-    // returns a workagreement if present for the current worker
-    checkForWork() {
-        let agreementAddress = this.contract.workersInfo(this.getCoinbase())[3];
-        console.log(agreementAddress);
-        console.log(typeof agreementAddress);
+    // returns a work agreement if present for the given worker
+    checkForAgreement(worker) {
+        let agreementAddress = this.contract.workersInfo(worker)[3];
         if (web3.toDecimal(agreementAddress) != 0) {
             let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
             return new WorkAgreement(agreementAddress);
@@ -105,13 +102,6 @@ class EthClient {
         };
         this.contract.sendTransaction(options)
             .buyContract(worker, redundancy, length);
-
-        let filter = web3.eth.filter('chain');
-        filter.watch(function() {
-            let workAgreement = this.contract.workersInfo(worker)[3];
-            console.log(workAgreement);
-            filter.stopWatching();
-        }.bind(this));
     }
 
     isWorker() {
@@ -146,8 +136,8 @@ class EthClient {
         return workers
     }
 
-    subscribe(topic, callback) {
-        return PubSub.subscribe(topic, callback);
+    subscribe(callback) {
+        return PubSub.subscribe('chain', callback);
     }
 
     unsubscribe(token) {

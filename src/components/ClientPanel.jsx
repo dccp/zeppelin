@@ -2,6 +2,7 @@ import React from "react";
 import EthClient from "../client/ethclient.js";
 import $ from "jquery";
 import KeyValue from "./KeyValue.jsx";
+import PubSub from "pubsub-js"
 
 let ClientPanel = React.createClass({
     getInitialState() {
@@ -59,21 +60,23 @@ let ClientPanel = React.createClass({
         this.setState({maxPrice: price || Infinity});
     },
 
-    submit(pubkey, price) {
+    submit(worker, price) {
         if (this.state.minLength === 0) {
             return;
         }
         let imageHash = this.refs.image.value;
-        EthClient.buyContract(pubkey, 1, price, this.state.minLength);
-        $.post("/transfer", {
-            imageHash: imageHash,
-            host: "someHost",
-            port:"somePort"
-        }, (data) => {
-            console.log("Sent docker-xfer:" + data);
-        }).fail((xhr, status, err) => {
-            console.error(document.URL, status, err.toString())
-        });
+        EthClient.buyContract(worker, 1, price, this.state.minLength);
+
+        PubSub.publish('agreement_bought', [worker, imageHash]);
+        //$.post("/transfer", {
+            //imageHash: imageHash,
+            //host: "someHost",
+            //port:"somePort"
+        //}, (data) => {
+            //console.log("Sent docker-xfer:" + data);
+        //}).fail((xhr, status, err) => {
+            //console.error(document.URL, status, err.toString())
+        //});
     },
 
     render() {

@@ -5,6 +5,7 @@ import ClientPanel from "./components/ClientPanel.jsx";
 import NavBar from "./components/NavBar.jsx";
 import JsonRPC from "./components/JsonRPC.jsx";
 import EthClient from "./client/ethclient.js";
+import PubSub from "pubsub-js"
 
 // Needs to be imported and set to window.jQuery before importing bootstrap
 import $ from "jquery";
@@ -16,20 +17,24 @@ let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
 
 let App = React.createClass({
-    checkForWork(msg, data) {
-        console.log(msg, data);
+    checkForWork() {
         if (!this.workerWorkAgreement) {
-            this.workerWorkAgreement = EthClient.checkForWork();
+            this.workerWorkAgreement = EthClient.checkForAgreement(EthClient.getCoinbase());
         }
     },
+    agreementWait(msg, [worker, imageHash]) {
+        console.log(msg, data);
+    },
     componentWillMount() {
+        this.tokens = {};
+        this.tokens.client = PubSub.subscribe('agreement_bought', this.agreementWait);
         if (EthClient.isWorker()) {
             this.checkForWork();
-            this.token = EthClient.subscribe('chain', this.checkForWork);
+            this.tokens.worker = EthClient.subscribe('chain', this.checkForWork);
         }
     },
     componentWillUnmount() {
-        EthClient.unsubscribe(this.token);
+        EthClient.unsubscribe(this.tokens.worker);
     },
     render() {
         return (
