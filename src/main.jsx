@@ -17,22 +17,26 @@ let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
 
 let App = React.createClass({
-    checkForWork() {
-        if (!this.workerWorkAgreement) {
-            this.workerWorkAgreement = EthClient.checkForAgreement(EthClient.getCoinbase());
+    checkForAgreement(worker, agreement) {
+        if (!agreement.contract) {
+            agreement.contract = EthClient.checkForAgreement(worker);
+            PubSub.unsubscribe(agreement.token);
         }
+        console.log(agreement.contract);
     },
-    agreementWait(msg, [worker, imageHash]) {
-        console.log(worker, imageHash);
-
+    addAgreement(msg, [worker, imageHash]) {
+        this.clientAgreements[worker] = { imageHash: imageHash };
+        let partial = this.checkForAgreement.bind(this, worker, this.clientAgreements[worker]);
+        this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
     componentWillMount() {
-        this.clientContracts = [];
+        this.clientAgreements = {};
+        this.workerAgreements = { "default": {} };
         this.tokens = {};
-        this.tokens.client = PubSub.subscribe('agreement_bought', this.agreementWait);
+        this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
         if (EthClient.isWorker()) {
-            this.checkForWork();
-            this.tokens.worker = EthClient.subscribe(this.checkForWork);
+            let partial = this.checkForAgreement.bind(this, EthClient.getCoinbase(), this.workerAgreements.default);
+            this.workerAgreements.default.token = EthClient.subscribe(partial);
         }
     },
     componentWillUnmount() {
