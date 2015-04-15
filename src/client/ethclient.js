@@ -184,6 +184,4 @@ class EthClient {
     }
 }
 
-let ethclient = new EthClient();
-
-export default ethclient;
+export default new EthClient();
