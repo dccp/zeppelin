@@ -13,7 +13,7 @@ let NavBar = React.createClass({
     },
     componentDidMount() {
         this.updateJsonRPCUrl();
-        this.token = EthClient.subscribe('chain', this.updateJsonRPCUrl);
+        this.token = EthClient.subscribe(this.updateJsonRPCUrl);
     },
     componentWillUnMount() {
         EthClient.unsubscribe(this.token)

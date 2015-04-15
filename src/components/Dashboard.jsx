@@ -13,7 +13,7 @@ let Dashboard = React.createClass({
     },
     componentDidMount() {
         this.refreshDashboard();
-        this.token = EthClient.subscribe('chain', this.refreshDashboard);
+        this.token = EthClient.subscribe(this.refreshDashboard);
     },
     componentWillUnmount() {
         EthClient.unsubscribe(this.token);

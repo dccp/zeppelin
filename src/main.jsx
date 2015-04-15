@@ -23,14 +23,16 @@ let App = React.createClass({
         }
     },
     agreementWait(msg, [worker, imageHash]) {
-        console.log(msg, data);
+        console.log(worker, imageHash);
+
     },
     componentWillMount() {
+        this.clientContracts = [];
         this.tokens = {};
         this.tokens.client = PubSub.subscribe('agreement_bought', this.agreementWait);
         if (EthClient.isWorker()) {
             this.checkForWork();
-            this.tokens.worker = EthClient.subscribe('chain', this.checkForWork);
+            this.tokens.worker = EthClient.subscribe(this.checkForWork);
         }
     },
     componentWillUnmount() {
