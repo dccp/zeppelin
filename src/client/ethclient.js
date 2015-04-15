@@ -42,7 +42,7 @@ class EthClient {
             unit = 'finney';
         }
 
-        return (unit !== 'wei' ? web3.fromWei(wei, unit) : wei) + ' ' + unit;
+        return (unit !== 'wei' ? web3.fromWei(wei, unit).toFormat() : wei) + ' ' + unit;
     }
 
     // returns a workagreement if present for the current worker
@@ -58,6 +58,7 @@ class EthClient {
 
     getDashboard() {
         let coinbase = this.getCoinbase();
+        let peerCount = web3.net.peerCount;
         return Q.all([
                 web3.eth.getBalancePromise(coinbase),
                 web3.eth.getCodePromise(ContractAddress),
@@ -82,7 +83,7 @@ class EthClient {
                 },
                 {label: "Contract address", value: ContractAddress},
                 {label: "Number of workers", value: workers.toString()},
-                {label: "Is worker", value: this._worker.toString()},
+                {label: "Number of peers", value: peerCount},
                 {label: "Code", value: code}
             ];
         });
