@@ -16,7 +16,8 @@ let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
 
 let App = React.createClass({
-    checkForWork() {
+    checkForWork(msg, data) {
+        console.log(msg, data);
         if (!this.workerWorkAgreement) {
             this.workerWorkAgreement = EthClient.checkForWork();
         }
@@ -24,7 +25,7 @@ let App = React.createClass({
     componentWillMount() {
         if (EthClient.isWorker()) {
             this.checkForWork();
-            this.token = EthClient.subscribe(this.checkForWork);
+            this.token = EthClient.subscribe('chain', this.checkForWork);
         }
     },
     componentWillUnmount() {

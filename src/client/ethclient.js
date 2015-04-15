@@ -3,7 +3,7 @@ import ContractStructure from "../fixtures/contractStructure.js";
 import web3 from "web3";
 import moment from "moment";
 import Q from "q";
-import {Dispatcher} from "flux";
+import PubSub from "pubsub-js"
 
 web3.eth.getBalancePromise = Q.denodeify(web3.eth.getBalance);
 web3.eth.getCodePromise = Q.denodeify(web3.eth.getCode);
@@ -146,12 +146,12 @@ class EthClient {
         return workers
     }
 
-    subscribe(callback) {
-        return this.dispatcher.register(callback);
+    subscribe(topic, callback) {
+        return PubSub.subscribe(topic, callback);
     }
 
     unsubscribe(token) {
-        this.dispatcher.unregister(token);
+        PubSub.unsubscribe(token);
     }
 
     getJsonRPCUrl() {
@@ -173,9 +173,9 @@ class EthClient {
         web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
         this.chainFilter = web3.eth.filter('chain');
 
-        this.dispatcher.dispatch();
+        PubSub.publish('chain');
         this.chainFilter.watch(() => {
-            this.dispatcher.dispatch();
+            PubSub.publish('chain');
         });
     }
 
