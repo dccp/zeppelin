@@ -5,8 +5,6 @@ import moment from "moment";
 import Q from "q";
 import {Dispatcher} from "flux";
 
-var listeners = [];
-
 web3.eth.getBalancePromise = Q.denodeify(web3.eth.getBalance);
 web3.eth.getCodePromise = Q.denodeify(web3.eth.getCode);
 web3.eth.getBlockPromise = Q.denodeify(web3.eth.getBlock);
@@ -155,14 +153,6 @@ class EthClient {
         this.dispatcher.unregister(token);
     }
 
-    registerListener(callback) {
-        listeners.push(callback);
-    }
-
-    unregisterListener(callback) {
-        listeners = listeners.filter((a) => a != callback);
-    }
-
     getJsonRPCUrl() {
         return this._jsonRpcUrl;
     }
@@ -175,9 +165,6 @@ class EthClient {
         if (window.localStorage) {
             window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
         }
-        listeners.forEach((func) => {
-            func(this._jsonRpcUrl);
-        });
         if (this.chainFilter) {
             // web3.reset();
             this.chainFilter.stopWatching();

@@ -14,17 +14,9 @@ let JsonRPC = React.createClass({
         if(!newUrl){
             newUrl = this.refs.jsonRpcInput_predefined.getDOMNode().value;
         }
+        this.setState({json_rpc_url: newUrl});
         console.log("Changing JSONRPC host to: " + newUrl);
         EthClient.setJsonRPCUrl(newUrl);
-    },
-    componentDidMount() {
-        EthClient.registerListener(this.updateJsonRPCUrl);
-    },
-    componentDidUnMount() {
-	EthClient.unregisterListener(this.updateJsonRPCUrl);
-    },
-    updateJsonRPCUrl(newUrl) {
-        this.setState({json_rpc_url: newUrl});
     },
     render() {
         return (

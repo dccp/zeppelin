@@ -7,20 +7,26 @@ let NavBar = React.createClass({
     getInitialState() {
         return {
             coinbase: "Waiting for AZ",
-            json_rpc_url: EthClient.getJsonRPCUrl()
+            json_rpc_url: "Connecting...",
+            is_worker: false
         }
     },
     componentDidMount() {
-        this.setState({coinbase: EthClient.getCoinbase()})
-        EthClient.registerListener(this.updateJsonRPCUrl);
+        this.updateJsonRPCUrl();
+        this.token = EthClient.subscribe(this.updateJsonRPCUrl);
     },
     componentWillUnMount() {
-        EthClient.unregisterListener(this.updateJsonRPCUrl);
+        EthClient.unsubscribe(this.token)
     },
-    updateJsonRPCUrl(newUrl) {
-        this.setState({json_rpc_url: newUrl});
+    updateJsonRPCUrl() {
+        this.setState({
+            json_rpc_url: EthClient.getJsonRPCUrl(),
+            coinbase: EthClient.getCoinbase(),
+            is_worker: EthClient.isWorker()
+        });
     },
     render() {
+        var worker = (<strong>{this.state.is_worker ? 'W' : 'C'}</strong>);
         return (
         <nav className="navbar navbar-default navbar-fixed-top">
             <div className="container">
@@ -39,7 +45,7 @@ let NavBar = React.createClass({
                         <NavTab to="jsonrpc">{this.state.json_rpc_url}</NavTab>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                        <li><Link to="app">{this.state.coinbase}</Link></li>
+                        <li><Link to="jsonrpc">{worker} <samp>{this.state.coinbase}</samp></Link></li>
                     </ul>
                 </div>
             </div>
