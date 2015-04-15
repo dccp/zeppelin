@@ -48,11 +48,11 @@ let ClientPanel = React.createClass({
                 <option value={content.Id}>{content.Id.substring(0, 10)}… {content.RepoTags.join('')} ({this.humanFileSize(content.VirtualSize)})</option>
             );
         } else {
-            return (<option disabled="disabled">No docker images found…</option>);
+            return (<option disabled="disabled" value={null}>No docker images found…</option>);
         }
     },
     canBuy() {
-        return this.state.minLength !== 0;
+        return this.state.minLength !== 0 && this.refs.image.value;
     },
 
     changeMaxPrice(e) {
@@ -61,10 +61,10 @@ let ClientPanel = React.createClass({
     },
 
     submit(worker, price) {
-        if (this.state.minLength === 0) {
+        let imageHash = this.refs.image.value;
+        if (this.state.minLength === 0 || !imageHash) {
             return;
         }
-        let imageHash = this.refs.image.value;
         EthClient.buyContract(worker, 1, price, this.state.minLength);
 
         PubSub.publish('agreement_bought', [worker, imageHash]);
