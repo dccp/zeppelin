@@ -12,22 +12,8 @@ window.$ = window.jQuery = $;
 import "bootstrap";
 
 let DefaultRoute = Router.DefaultRoute;
-let Route = Router.Route;
-
-let routes = (
-  <Route name="app" path="/" handler={App}>
-    <DefaultRoute handler={ClientPanel}/>
-    <Route name="worker" path="worker" handler={WorkerPanel} title="Worker admin" />
-    <Route name="client" path="/" handler={ClientPanel} title="Client admin" />
-    <Route name="jsonrpc" path="jsonrpc" handler={JsonRPC} title="JsonRPC" />
-  </Route>
-);
-
-Router.run(routes, function (Handler) {
-  React.render(<Handler/>, document.body);
-});
-
 let RouteHandler = Router.RouteHandler;
+let Route = Router.Route;
 
 let App = React.createClass({
     checkForWork() {
@@ -53,4 +39,17 @@ let App = React.createClass({
             </div>
         );
     }
+});
+
+let routes = (
+  <Route name="app" path="/" handler={App}>
+    <DefaultRoute handler={ClientPanel}/>
+    <Route name="worker" path="worker" handler={WorkerPanel} title="Worker admin" />
+    <Route name="client" path="/" handler={ClientPanel} title="Client admin" />
+    <Route name="jsonrpc" path="jsonrpc" handler={JsonRPC} title="JsonRPC" />
+  </Route>
+);
+
+Router.run(routes, function (Handler) {
+  React.render(<Handler/>, document.body);
 });
