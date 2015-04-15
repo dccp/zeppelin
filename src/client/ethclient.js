@@ -11,22 +11,20 @@ web3.eth.getBlockPromise = Q.denodeify(web3.eth.getBlock);
 
 class EthClient {
     constructor() {
+        let url = null;
+        if (window.localStorage && window.localStorage.getItem('rpc_url')) {
+            url = window.localStorage.getItem('rpc_url');
+        }
         try {
-            let url = null;
-            if (window.localStorage && window.localStorage.getItem('rpc_url')) {
-                url = window.localStorage.getItem('rpc_url');
-            }
             this.setJsonRPCUrl(url || 'http://localhost:8080');
+        } catch(e) {
+            console.error("Could not contact %s, due to: %O", this.getJsonRPCUrl(), e);
+        }
 
-            let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
-            this.contract = new WorkerDispatcher(ContractAddress);
-            this.identity = web3.shh.newIdentity();
-            this._worker = this.isWorker();
-        }
-        catch(e) {
-            console.error(e);
-            console.log("Could not contact " + this.getJsonRPCUrl());
-        }
+        let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
+        this.contract = new WorkerDispatcher(ContractAddress);
+        this.identity = web3.shh.newIdentity();
+        this._worker = this.isWorker();
     }
     getCoinbase() {
         return web3.eth.coinbase;
