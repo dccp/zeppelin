@@ -1,9 +1,10 @@
 import React from "react";
 import Router from "react-router";
-import App from "./components/App.jsx";
 import WorkerPanel from "./components/WorkerPanel.jsx";
 import ClientPanel from "./components/ClientPanel.jsx";
+import NavBar from "./components/NavBar.jsx";
 import JsonRPC from "./components/JsonRPC.jsx";
+import EthClient from "./client/ethclient.js";
 
 // Needs to be imported and set to window.jQuery before importing bootstrap
 import $ from "jquery";
@@ -24,4 +25,32 @@ let routes = (
 
 Router.run(routes, function (Handler) {
   React.render(<Handler/>, document.body);
+});
+
+let RouteHandler = Router.RouteHandler;
+
+let App = React.createClass({
+    checkForWork() {
+        if (!this.workerWorkAgreement) {
+            this.workerWorkAgreement = EthClient.checkForWork();
+        }
+    },
+    componentWillMount() {
+        if (EthClient.isWorker()) {
+            this.checkForWork();
+            this.token = EthClient.subscribe(this.checkForWork);
+        }
+    },
+    componentWillUnmount() {
+        EthClient.unsubscribe(this.token);
+    },
+    render() {
+        return (
+            <div>
+            <NavBar/>
+            {/* this is the important part */}
+            <RouteHandler/>
+            </div>
+        );
+    }
 });
