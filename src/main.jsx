@@ -18,11 +18,9 @@ let Route = Router.Route;
 
 let App = React.createClass({
     checkForAgreement(worker, agreement) {
-        if (!agreement.contract) {
-            agreement.contract = EthClient.checkForAgreement(worker);
+        if (agreement.contract = EthClient.checkForAgreement(worker)) {
             PubSub.unsubscribe(agreement.token);
         }
-        console.log(agreement.contract);
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
