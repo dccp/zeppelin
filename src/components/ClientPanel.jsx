@@ -52,7 +52,7 @@ let ClientPanel = React.createClass({
         }
     },
     canBuy() {
-        return this.state.minLength !== 0 && this.refs.image.value;
+        return this.state.minLength !== 0 && this.refs.image.getDOMNode().value;
     },
 
     changeMaxPrice(e) {
@@ -61,7 +61,8 @@ let ClientPanel = React.createClass({
     },
 
     submit(worker, price) {
-        let imageHash = this.refs.image.value;
+        let imageHash = this.refs.image.getDOMNode().value;
+        console.log(imageHash);
         if (this.state.minLength === 0 || !imageHash) {
             return;
         }
