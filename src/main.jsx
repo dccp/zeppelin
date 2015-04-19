@@ -17,14 +17,27 @@ let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
 
 let App = React.createClass({
-    checkForAgreement(worker, agreement) {
+    checkForAgreement(worker, agreement, callback) {
         if (agreement.contract = EthClient.checkForAgreement(worker)) {
             PubSub.unsubscribe(agreement.token);
+            callback(agreement);
         }
+    },
+    checkForPorts(agreement) {
+        console.log(agreement.dtport, agreement.port);
+    },
+    workerEnableXfer(agreement) {
+        // TODO - start docker xfer
+        agreement.contract.setWorkerIP("127.0.0.1", 1337);
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
-        let partial = this.checkForAgreement.bind(this, worker, this.clientAgreements[worker]);
+        let partial = this.checkForAgreement.bind(this,
+                                                  worker,
+                                                  this.clientAgreements[worker],
+                                                  (agreement) => {
+                                                      agreement.token = PubSub.subscribe(checkForPorts);
+                                                  });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
     componentWillMount() {
@@ -33,7 +46,10 @@ let App = React.createClass({
         this.tokens = {};
         this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
         if (EthClient.isWorker()) {
-            let partial = this.checkForAgreement.bind(this, EthClient.getCoinbase(), this.workerAgreements.default);
+            let partial = this.checkForAgreement.bind(this,
+                                                      EthClient.getCoinbase(),
+                                                      this.workerAgreements.default,
+                                                      this.workerEnableXfer);
             this.workerAgreements.default.token = EthClient.subscribe(partial);
         }
     },
