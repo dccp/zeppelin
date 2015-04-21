@@ -18,13 +18,20 @@ let Route = Router.Route;
 
 let App = React.createClass({
     checkForAgreement(worker, agreement, callback) {
+        console.log(agreement)
         if (agreement.contract = EthClient.checkForAgreement(worker)) {
             PubSub.unsubscribe(agreement.token);
             callback(agreement);
         }
+        console.log(agreement)
     },
     checkForPorts(agreement) {
-        console.log(agreement.dtport, agreement.port);
+        console.log(agreement.contract.dtport, agreement.contract.port);
+        if (agreement.contract.port) {
+            // tell ui that docker is hosted
+        } else if (agreement.contract.dtport) {
+            // TODO - transfer docker image
+        }
     },
     workerEnableXfer(agreement) {
         // TODO - start docker xfer
@@ -36,7 +43,8 @@ let App = React.createClass({
                                                   worker,
                                                   this.clientAgreements[worker],
                                                   (agreement) => {
-                                                      agreement.token = PubSub.subscribe(checkForPorts);
+                                                      let cfp = this.checkForPorts.bind(this, agreement);
+                                                      agreement.token = EthClient.subscribe(cfp);
                                                   });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
