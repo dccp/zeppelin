@@ -31,6 +31,16 @@ let Dashboard = React.createClass({
                         {nodes}
                         <hr />
                     </div>
+
+                    <form onSubmit={this.handleJsonRpcSubmit}>
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label htmlFor="jsonrpc">JSON RPC URL</label>
+                                <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder="localhost:8080"/>
+                            </div>
+                            <button type="submit" className="btn btn-primary">Change</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         );
