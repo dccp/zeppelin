@@ -32,26 +32,28 @@ class EthClient {
           topics: [topic]
         };
         let filter = web3.shh.filter(options);
-        filter.watch(function(m) {
+        filter.watch(function(error, m) {
+            console.log(m);
             let message = m.payload;
-            let elapsed = Math.floor(Date.now() / 1000) - web3.toDecimal(m.sent);
+            /*let elapsed = Math.floor(Date.now() / 1000) - web3.toDecimal(m.sent);
             console.log('---------------------------------');
-            console.log(message.msg);
             console.log('delay:', Math.floor(elapsed / 60) + ':' + Math.floor(elapsed % 60));
             console.log('ttl:', message.ttl, web3.toDecimal(m.ttl));
-            console.log('prio:', message.prio, web3.toDecimal(m.workProved));
+            console.log('prio:', message.prio, web3.toDecimal(m.workProved));*/
+            console.log(message.msg);
         });
     }
 
     post(_topic, message, priority = 100, ttl = 1000) {
-        message = {
+        /*message = {
             msg: message,
             ttl: ttl,
             prio: priority
-        }
+        }*/
         web3.shh.post({
+          from: this.identity,
           topics: [_topic],
-          payload: JSON.stringify(message),
+          payload: message,
           ttl: ttl,
           priority: priority
         });
