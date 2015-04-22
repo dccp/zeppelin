@@ -23,6 +23,12 @@ app.post('/transfer', function(req, res) {
     res.send(imageHash + " " + host + ":" + port + "\n");
 });
 
+app.post('/receive', function(req, res) {
+    let name = "lolubuntu";
+    let port = req.body.port;
+    dockerx.server.receive(name, port).then(res.send("lolubuntu has been received"));
+});
+
 // Run server
 let server = app.listen(8000, function () {
     let host = server.address().address;
