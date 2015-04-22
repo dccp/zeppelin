@@ -12,6 +12,8 @@ import $ from "jquery";
 window.$ = window.jQuery = $;
 import "bootstrap";
 
+window.ethclient = EthClient;
+
 let DefaultRoute = Router.DefaultRoute;
 let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
