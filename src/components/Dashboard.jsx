@@ -1,55 +1,36 @@
 import React from "react";
-import InfoBox from "./Infobox.jsx";
-import EthClient from "../client/ethclient.js";
 import KeyValue from "./KeyValue.jsx";
+import EthClient from "../client/ethclient.js";
 
 let Dashboard = React.createClass({
     getInitialState() {
         return {
-            peercount: 0
+            items: []
         };
     },
-    updatePeerCount() {
-        EthClient.getPeerCount(function(peers) {
-            this.setState({peercount: peers})
-        }.bind(this));
+    refreshDashboard() {
+        EthClient.getDashboard().then((items) => this.setState({items: items}));
     },
     componentDidMount() {
-        this.updatePeerCount();
-        setInterval(this.updatePeerCount, 2000);
+        this.refreshDashboard();
+        this.token = EthClient.subscribe(this.refreshDashboard);
     },
-
-    handleJsonRpcSubmit(e) {
-        e.preventDefault();
-        let newUrl = this.refs.jsonRpcInput.getDOMNode().value.trim();
-        console.log(newUrl);
-        EthClient.setJsonRpc(newUrl);
+    componentWillUnmount() {
+        EthClient.unsubscribe(this.token);
     },
-
     render() {
+        var nodes = this.state.items.map((item) =>
+            <KeyValue key={item.label} label={item.label} title={item.title}>{item.value}</KeyValue>
+        );
         return (
-            <div className="container">
-                <h1>
-                    Zeppelin Dashboard
-                </h1>
+            <div>
+                <h1>Zeppelin Dashboard</h1>
                 <p className="lead">This is the dev dashboard. You can call it the stairway to heaven.</p>
                 <div className="row">
                     <div className="col-md-12">
-                        <InfoBox updateLoop={EthClient.getChain.bind(EthClient)} unregister={EthClient.unregisterChain}/>
-                        <InfoBox updateLoop={EthClient.getPending.bind(EthClient)} unregister={EthClient.unregisterPending}/>
-                        <KeyValue label="Peer count">{this.state.peercount}</KeyValue>
+                        {nodes}
                         <hr />
                     </div>
-
-                    <form onSubmit={this.handleJsonRpcSubmit}>
-                        <div className="col-md-6">
-                            <div className="form-group">
-                                <label for="jsonrpc">JSON RPC URL</label>
-                                <input type="url" className="form-control" id="jsonrpc" ref="jsonRpcInput" placeholder="localhost:8080"/>
-                            </div>
-                            <button type="submit" className="btn btn-primary">Change</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         );

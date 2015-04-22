@@ -1,24 +1,30 @@
 import ContractAddress from "../fixtures/contractAddress.js";
 import ContractStructure from "../fixtures/contractStructure.js";
+import web3 from "web3";
+import moment from "moment";
+import Q from "q";
+import PubSub from "pubsub-js"
 
-if (typeof web3 === 'undefined') {
-    var web3 = require('ethereum.js');
-    window.web3 = web3;
-}
-
-web3.setProvider(new web3.providers.HttpProvider());
+web3.eth.getBalancePromise = Q.denodeify(web3.eth.getBalance);
+web3.eth.getCodePromise = Q.denodeify(web3.eth.getCode);
+web3.eth.getBlockPromise = Q.denodeify(web3.eth.getBlock);
 
 class EthClient {
     constructor() {
+        let url = null;
+        if (window.localStorage && window.localStorage.getItem('rpc_url')) {
+            url = window.localStorage.getItem('rpc_url');
+        }
         try {
-            var m = web3.eth.getStorageAt(ContractAddress, "0x1");
-            let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
-            this.contract = new WorkerDispatcher(ContractAddress);
-            this.identity = web3.shh.newIdentity();
+            this.setJsonRPCUrl(url || 'http://localhost:8080');
+        } catch(e) {
+            console.error("Could not contact %s, due to: %O", this.getJsonRPCUrl(), e);
         }
-        catch(e) {
-            console.log("Could not contact localhost:8080");
-        }
+
+        let WorkerDispatcher = web3.eth.contract(ContractStructure.WorkerDispatcher);
+        this.contract = new WorkerDispatcher(ContractAddress);
+        this.identity = web3.shh.newIdentity();
+        this._worker = this.isWorker();
     }
 
     watch(topic) {
@@ -55,59 +61,67 @@ class EthClient {
         success(web3.net.peerCount);
     }
 
-
-    getCoinbase(success) {
-        success(web3.eth.coinbase);
+    getCoinbase() {
+        return web3.eth.coinbase;
     }
 
-    getChain(success) {
-        function createContent() {
-            return {
-                items: [
-                    {label: "Coinbase", value: web3.eth.coinbase},
-                    {label: "Accounts", value: web3.eth.accounts},
-                    {label: "Balance", value: web3.toDecimal(web3.eth.getBalance(web3.eth.coinbase))}
-                ]
-            }
+    formatBalance(wei) {
+        let unit = 'wei';
+
+        if (wei > 10e18) {
+            unit = 'ether';
+        } else if (wei > 10e15) {
+            unit = 'finney';
         }
 
-        success(createContent());
-        web3.eth.filter('chain').watch(function() {
-            success(createContent());
-        });
+        return (unit !== 'wei' ? web3.fromWei(wei, unit).toFormat() : wei) + ' ' + unit;
     }
 
-    getPending(success) {
-        let contract = this.contract;
-        function createContent() {
-            let workers = contract.numWorkers();
-            let latestBlock = web3.eth.blockNumber;
-            return {
-                items: [
-                    {label: "Latest block", value: latestBlock},
-                    {label: "Latest block hash", value: web3.eth.getBlock(latestBlock).hash},
-                    {label: "Latest block timestamp", value: web3.eth.getBlock(latestBlock).timestamp},
-                    {label: "Contract address", value: ContractAddress},
-                    {label: "Number of workers", value: workers.toString()}
-                ]
-            }
+    // returns a work agreement if present for the given worker
+    checkForAgreement(worker) {
+        let agreementAddress = this.contract.workersInfo(worker)[3];
+        if (web3.toDecimal(agreementAddress) != 0) {
+            let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
+            return new WorkAgreement(agreementAddress);
         }
-        success(createContent());
-        web3.eth.filter('pending').watch(function() {
-            success(createContent());
+    }
+
+    getDashboard() {
+        let coinbase = this.getCoinbase();
+        let peerCount = web3.net.peerCount;
+        return Q.all([
+                web3.eth.getBalancePromise(coinbase),
+                web3.eth.getCodePromise(ContractAddress),
+                web3.eth.getBlockPromise(web3.eth.blockNumber)
+        ]).then(([balance, code, block]) => {
+            let workers = this.contract.numWorkers();
+            let timestamp = moment.unix(block.timestamp);
+            if (code.length > 50) {
+                code = code.substring(0, 60) + '…';
+            }
+
+            return [
+                {label: "Coinbase", value: coinbase},
+                {label: "Accounts", value: web3.eth.accounts},
+                {label: "Balance", value: this.formatBalance(balance), title: balance},
+                {label: "Latest block", value: block.number},
+                {label: "Latest block hash", value: block.hash},
+                {
+                    label: "Latest block timestamp",
+                    value: timestamp.fromNow(),
+                    title: timestamp.format('llll')
+                },
+                {label: "Contract address", value: ContractAddress},
+                {label: "Number of workers", value: workers.toString()},
+                {label: "Number of peers", value: peerCount},
+                {label: "Code", value: code}
+            ];
         });
-    }
-
-    unregisterChain() {
-        web3.eth.filter('latest').stopWatching();
-    }
-
-    unregisterPending() {
-        web3.eth.filter('pending').stopWatching();
     }
 
     registerWorker(maxLength, price, name) {
         this.contract.registerWorker(maxLength, price, name);
+        this._worker = true;
     }
 
     changeWorkerPrice(newPrice) {
@@ -119,50 +133,90 @@ class EthClient {
             value: length * price,
             gas: 500000
         };
+        this.contract.sendTransaction(options)
+            .buyContract(worker, redundancy, length);
+    }
 
-        let callback = function(error, result) {
-            if(!error) {
-                console.log("async");
-                console.log(result)
-            } else
-                console.error(error);
-        };
-
-        try {
-            let result = this.contract.sendTransaction(options, callback).buyContract(worker, redundancy, length);
-            console.log("sync");
-            console.log(result);
-        } catch(e) {
-            console.error(String(e));
+    isWorker() {
+        let numWorkers = this.contract.numWorkers().toNumber();
+        for (let i = 0; i < numWorkers; i++) {
+            if (web3.eth.coinbase === this.contract.workerList(i)) {
+                return true;
+            }
         }
+        return false;
     }
 
-    bigNumberToInt(bigNumber) {
-        return bigNumber.c[0];
-    }
-
-    findWorkers(length, price, success) {
-        let numWorkers = this.bigNumberToInt(this.contract.numWorkers());
+    findWorkers(length, price) {
+        let numWorkers = this.contract.numWorkers().toNumber();
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
-            let info = this.contract.workersInfo(address);
-            let workerLength = this.bigNumberToInt(info[1]);
-            let workerPrice = this.bigNumberToInt(info[2]);
-            if (length <= workerLength && price >= workerPrice) {
-                workers[workers.length] = {pubkey: address, name: info[0], length: workerLength, price: workerPrice};
+            let [wName, wLength, wPrice] = this.contract.workersInfo(address);
+            wLength = wLength.toNumber()
+            wPrice = wPrice.toNumber();
+
+            if (length <= wLength && price >= wPrice) {
+                workers.push({
+                    pubkey: address,
+                    name: wName,
+                    length: wLength,
+                    price: wPrice
+                });
             }
         }
 
-        success(workers);
+        return workers
     }
 
-    setJsonRpc(url) {
-        web3.setProvider(new web3.providers.HttpProvider(url));
+    subscribe(callback) {
+        return PubSub.subscribe('chain', callback);
+    }
+
+    unsubscribe(token) {
+        PubSub.unsubscribe(token);
+    }
+
+    getJsonRPCUrl() {
+        return this._jsonRpcUrl;
+    }
+
+    setJsonRPCUrl(url) {
+        if (!url.startsWith('http')) {
+            url = 'http://' + url;
+        }
+        this._jsonRpcUrl = url;
+        if (window.localStorage) {
+            window.localStorage.setItem('rpc_url', this._jsonRpcUrl);
+        }
+        if (this.chainFilter) {
+            // web3.reset();
+            this.chainFilter.stopWatching();
+        }
+        web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
+        this.chainFilter = web3.eth.filter('chain');
+
+        PubSub.publish('chain');
+        this.chainFilter.watch(() => {
+            PubSub.publish('chain');
+        });
+    }
+
+    sendMsg(to, data) {
+        web3.shh.post({
+            from: this.identity,
+            to: to,
+            payload: [ web3.fromAscii(data) ],
+        });
+    }
+
+    askWorker(workerAddress, contractAddress) {
+        web3.shh.post({
+            from: this.identity,
+            topic: workerAddress,
+            payload: [ contractAddress ],
+        });
     }
 }
 
-let ethclient = new EthClient();
-window.ethclient = ethclient;
-
-export default ethclient;
+export default new EthClient();

@@ -1,14 +1,38 @@
-var express = require('express');
-var app = express();
+import express from 'express';
+import bodyParser from 'body-parser';
+import dockerx from 'docker-transfer';
+
+let app = express();
 
 // Serve static files
 app.use(express.static(__dirname + '/build'));
 app.use(express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
-// Run server
-var server = app.listen(8000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-  console.log('Zeppelin listening at http://%s:%s', host, port);
+app.get('/images', function(req, res) {
+    dockerx.client.listImages().then(json => res.json(json));
+});
+
+app.post('/transfer', function(req, res) {
+    let imageHash = req.body.imageHash;
+    let host = req.body.host;
+    let port = req.body.port;
+    dockerx.client.sendImage(imageHash, host, port);
+    res.send(imageHash + " " + host + ":" + port + "\n");
+});
+
+app.post('/receive', function(req, res) {
+    let name = "lolubuntu";
+    let port = req.body.port;
+    dockerx.server.receive(name, port).then(res.send("lolubuntu has been received"));
+});
+
+// Run server
+let server = app.listen(8000, function () {
+    let host = server.address().address;
+    let port = server.address().port;
+
+    console.log('Zeppelin listening at http://%s:%s', host, port);
 });

@@ -2,7 +2,7 @@
 *.swo
 *.pyc
 
-src/fixtures/contractAddress.js
+babel.json
 
 build/
 node_modules/
