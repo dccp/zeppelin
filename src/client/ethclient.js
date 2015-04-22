@@ -16,7 +16,7 @@ class EthClient {
             url = window.localStorage.getItem('rpc_url');
         }
         try {
-            this.setJsonRPCUrl(url || 'http://localhost:8080');
+            this.setJsonRPCUrl(url || 'http://localhost:8545');
         } catch(e) {
             console.error("Could not contact %s, due to: %O", this.getJsonRPCUrl(), e);
         }
