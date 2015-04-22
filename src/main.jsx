@@ -31,11 +31,18 @@ let App = React.createClass({
         if (agreement.contract.port) {
             // tell ui that docker is hosted
         } else if (agreement.contract.dtport) {
-            // TODO - transfer docker image
+            $.post("/transfer", {
+                imageHash: agreement.imageHash,
+                host: agreement.contract.ip,
+                port: agreement.contract.dtport
+            }, (data) => {
+                console.log("Sent docker with data: " + data);
+            }).fail((xhr, status, err) => {
+                console.error(document.URL, status, err.toString());
+            })
         }
     },
     workerEnableXfer(agreement) {
-        // TODO - start docker xfer
         $.post("/receive", {
             port: DockerConfig.port
         }, (data) => {
@@ -43,7 +50,7 @@ let App = React.createClass({
         }).fail((xhr, status, err) => {
             console.error(document.URL, status, err.toString())
         });
-        agreement.contract.setWorkerIP("127.0.0.1", 1337); // set to...something else?
+        agreement.contract.setWorkerIP("127.0.0.1", DockerConfig.port); // set to...something else?
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
