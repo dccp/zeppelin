@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar.jsx";
 import JsonRPC from "./components/JsonRPC.jsx";
 import EthClient from "./client/ethclient.js";
 import PubSub from "pubsub-js"
+import DockerConfig from "./fixtures/portConfig.json"
 
 // Needs to be imported and set to window.jQuery before importing bootstrap
 import $ from "jquery";
@@ -35,7 +36,14 @@ let App = React.createClass({
     },
     workerEnableXfer(agreement) {
         // TODO - start docker xfer
-        agreement.contract.setWorkerIP("127.0.0.1", 1337);
+        $.post("/receive", {
+            port: DockerConfig.port
+        }, (data) => {
+            console.log(data);
+        }).fail((xhr, status, err) => {
+            console.error(document.URL, status, err.toString())
+        });
+        agreement.contract.setWorkerIP("127.0.0.1", 1337); // set to...something else?
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
