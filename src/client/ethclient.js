@@ -103,7 +103,7 @@ class EthClient {
     }
 
     isWorker() {
-        let numWorkers = this.contract.numWorkers().toNumber();
+        let numWorkers = this.contract.numWorkers()[0].toNumber();
         for (let i = 0; i < numWorkers; i++) {
             if (web3.eth.coinbase === this.contract.workerList(i)) {
                 return true;
@@ -113,7 +113,7 @@ class EthClient {
     }
 
     findWorkers(length, price) {
-        let numWorkers = this.contract.numWorkers().toNumber();
+        let numWorkers = this.contract.numWorkers()[0].toNumber();
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
