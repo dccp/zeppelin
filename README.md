@@ -1,9 +1,6 @@
 # Zeppelin
 A decentralized marketplace for computation power
 
-## Current limitations
-- Frontend is dependent on eth/AZ backend
-
 ## How do I develop?
 First, install the dependencies with
 
