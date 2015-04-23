@@ -26,7 +26,7 @@ app.post('/transfer', function(req, res) {
 app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
-    dockerx.server.receive(name, port).then(res.send("lolubuntu has been received"));
+    dockerx.server.receive(name, port).then(res.send("Started listening at", port));
 });
 
 // Run server
