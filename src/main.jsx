@@ -28,19 +28,19 @@ let App = React.createClass({
     },
     checkForPorts(agreement) {
         console.log(agreement.contract.dtport, agreement.contract.port);
-        if (agreement.contract.port) {
-            // tell ui that docker is hosted
-        } else if (agreement.contract.dtport) {
-            $.post("/transfer", {
-                imageHash: agreement.imageHash,
-                host: agreement.contract.ip,
-                port: agreement.contract.dtport
-            }, (data) => {
-                console.log("Sent docker with data: " + data);
-            }).fail((xhr, status, err) => {
-                console.error(document.URL, status, err.toString());
-            })
-        }
+        /*if (agreement.contract.port) {*/
+            /*// tell ui that docker is hosted*/
+        /*} else if (agreement.contract.dtport) {*/
+            /*$.post("/transfer", {*/
+                /*imageHash: agreement.imageHash,*/
+                /*host: agreement.contract.ip,*/
+                /*port: agreement.contract.dtport*/
+            /*}, (data) => {*/
+                /*console.log("Sent docker with data: " + data);*/
+            /*}).fail((xhr, status, err) => {*/
+                /*console.error(document.URL, status, err.toString());*/
+            /*})*/
+        /*}*/
     },
     workerEnableXfer(agreement) {
         $.post("/receive", {
