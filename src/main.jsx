@@ -26,22 +26,25 @@ let App = React.createClass({
         }
         console.log(agreement)
     },
-    checkForPorts(agreement) {
-        console.log(agreement.contract.dtport, agreement.contract.port);
-        /*if (agreement.contract.port) {*/
-            /*// tell ui that docker is hosted*/
-        /*} else if (agreement.contract.dtport) {*/
-            /*$.post("/transfer", {*/
-                /*imageHash: agreement.imageHash,*/
-                /*host: agreement.contract.ip,*/
-                /*port: agreement.contract.dtport*/
-            /*}, (data) => {*/
-                /*console.log("Sent docker with data: " + data);*/
-            /*}).fail((xhr, status, err) => {*/
-                /*console.error(document.URL, status, err.toString());*/
-            /*})*/
-        /*}*/
+    checkForDtPort(agreement) {
+        console.log("dtport: ", agreement.contract.port);
+        /*$.post("/transfer", {*/
+            /*imageHash: agreement.imageHash,*/
+            /*host: agreement.contract.ip,*/
+            /*port: agreement.contract.dtport*/
+        /*}, (data) => {*/
+            /*console.log("Sent docker with data: " + data);*/
+        /*}).fail((xhr, status, err) => {*/
+            /*console.error(document.URL, status, err.toString());*/
+        /*})*/
+        // start listening for hosting port
+        PubSub.unsubscribe(agreement.token);
+        agreement.token = EthClient.subscribe(this.checkForPort.bind(this, agreement));
     },
+    checkforPort(agreement) {
+        console.log("regular port: ", agreement.contract.port);
+        // tell ui that docker is hosted
+    }
     workerEnableXfer(agreement) {
         $.post("/receive", {
             port: DockerConfig.port
@@ -58,7 +61,7 @@ let App = React.createClass({
                                                   worker,
                                                   this.clientAgreements[worker],
                                                   (agreement) => {
-                                                      let cfp = this.checkForPorts.bind(this, agreement);
+                                                      let cfp = this.checkForDtPort.bind(this, agreement);
                                                       agreement.token = EthClient.subscribe(cfp);
                                                   });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
