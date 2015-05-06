@@ -18,7 +18,7 @@ class EthereumJSON:
     def sendJSONRequest(self, method, *params):
         data = json.dumps({"jsonrpc": "2.0", "method": method,
                            "params": params, "id": self._get_id()})
-        response = requests.post("http://localhost:8080", data=data)
+        response = requests.post("http://localhost:8545", data=data)
         jsondata = response.json()
         if 'result' in jsondata:
             return jsondata['result']
