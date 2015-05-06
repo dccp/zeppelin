@@ -159,7 +159,7 @@ class EthClient {
             this.chainFilter.stopWatching();
         }
         web3.setProvider(new web3.providers.HttpProvider(this._jsonRpcUrl));
-        this.chainFilter = web3.eth.filter('chain');
+        this.chainFilter = web3.eth.filter('latest');
 
         PubSub.publish('chain');
         this.chainFilter.watch(() => {
