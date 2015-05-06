@@ -21,14 +21,14 @@ app.post('/transfer', function(req, res) {
     let host = req.body.host;
     let port = req.body.port;
     dockerx.client.sendImage(imageHash, host, port);
-    res.send(timestamp() + "TRANSFER: Init transfer of " + imageHash + " to " + host + ":" + port + "\n");
+    res.send(timestamp() + " TRANSFER: Init client transfer of " + imageHash + " to " + host + ":" + port + "\n");
 });
 
 app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
     dockerx.server.receive(name, port).then(
-        res.send(timestamp() + " RECEIVE: Init docker-transfer server listening at " + port + "\n")
+        res.send(timestamp() + " RECEIVE: Init server listening at " + port + "\n")
     );
 });
 
