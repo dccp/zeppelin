@@ -36,6 +36,10 @@ let FormPanel = React.createClass({
                                 <label className="control-label">Name</label>
                                 <input type="text" className="form-control" placeholder="Name to display" ref="workerName"/>
                             </div>
+                            <div className="form-group">
+                                <label className="control-label">Ip</label>
+                                <input type="text" className="form-control" placeholder="Your public ip" ref="ip"/>
+                            </div>
                             <input className="btn btn-primary" type="submit" value="Register worker" />
                         </form>
                     </div>

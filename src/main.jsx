@@ -44,7 +44,7 @@ let App = React.createClass({
     checkforPort(agreement) {
         console.log("regular port: ", agreement.contract.port);
         // tell ui that docker is hosted
-    }
+    },
     workerEnableXfer(agreement) {
         $.post("/receive", {
             port: DockerConfig.port
@@ -53,7 +53,7 @@ let App = React.createClass({
         }).fail((xhr, status, err) => {
             console.error(document.URL, status, err.toString())
         });
-        agreement.contract.setWorkerIP("127.0.0.1", DockerConfig.port); // set to...something else?
+        agreement.contract.setWorkerDtPort(DockerConfig.port);
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };

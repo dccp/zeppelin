@@ -23,9 +23,8 @@ contract WorkAgreement {
         testers[tester] = true;
     }
 
-    function setWorkerIP(bytes32 _ip, uint _dtport) {
+    function setWorkerDtPort(uint _dtport) {
         if (msg.sender == worker) {
-            ip = _ip;
             dtport = _dtport;
         }
     }
@@ -40,6 +39,7 @@ contract WorkAgreement {
 contract WorkerDispatcher {
     struct Worker {
         bytes32 name;
+        bytes32 ip;
         uint maxLength;
         uint price;
         address agreement;
@@ -67,12 +67,14 @@ contract WorkerDispatcher {
         return wa;
     }
 
-    function registerWorker(uint maxLength, uint price, bytes32 name) {
+    function registerWorker(uint maxLength, uint price,
+                            bytes32 name, bytes32 ip) {
         if (workersInfo[msg.sender].name == "") {
             workerList[numWorkers++] = msg.sender;
         }
         Worker w = workersInfo[msg.sender];
         w.name = name;
+        w.ip = ip;
         w.maxLength = maxLength;
         w.price = price;
         w.agreement = 0;

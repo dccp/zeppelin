@@ -88,8 +88,8 @@ class EthClient {
         });
     }
 
-    registerWorker(maxLength, price, name) {
-        this.contract.registerWorker(maxLength, price, name);
+    registerWorker(maxLength, price, name, ip) {
+        this.contract.registerWorker(maxLength, price, name, ip);
         this._worker = true;
     }
 
