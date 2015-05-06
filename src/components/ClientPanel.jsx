@@ -86,9 +86,12 @@ let ClientPanel = React.createClass({
             <TableRow key={content.pubkey} rowContent={content} canBuy={this.canBuy()} clientPanel={this} />
         );
         let clientAgreements = JSON.parse(localStorage.getItem("clientAgreements"));
-        let agreements = Object.keys(clientAgreements).map((worker) =>
-            <ClientAgreement agreements={clientAgreements} worker={worker} />
-        );
+        let agreements = "";
+        if (clientAgreements !== null) {
+            Object.keys(clientAgreements).map((worker) =>
+                <ClientAgreement agreements={clientAgreements} worker={worker} />
+            );
+        }
         return (
             <div className="container">
                 <div className="page-header">
@@ -165,7 +168,10 @@ let ClientAgreement = React.createClass({
             <span>
                 <h3>{agreement.imageHash}</h3>
                 Worker: <strong>{this.props.worker}</strong><br />
-                Contract: <strong>{contractAddress}</strong>
+                Contract: <strong>{contractAddress}</strong><br />
+                Price: <strong>{contract.price().toNumber()}</strong><br />
+                Length: <strong>{contract.end().toNumber()}</strong><br />
+                IP/Port: <strong>{EthClient.contract.workersInfo(this.props.worker)[1]}</strong><br />
             </span>
         )
     }
