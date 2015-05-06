@@ -6,13 +6,15 @@ let FormPanel = React.createClass({
         let maxLength = this.refs.maxLength.getDOMNode().value.trim();
         let price = this.refs.price.getDOMNode().value.trim();
         let workerName = this.refs.workerName.getDOMNode().value.trim();
-        if (!maxLength || !price || !workerName) {
+        let ip = this.refs.ip.getDOMNode().value.trim();
+        if (!maxLength || !price || !workerName || !ip) {
             return;
         }
-        this.props.onContractInteract({maxLength: maxLength, price: price, workerName: workerName});
+        this.props.onContractInteract({maxLength: maxLength, price: price, workerName: workerName, ip: ip});
         this.refs.maxLength.getDOMNode().value = '';
         this.refs.price.getDOMNode().value = '';
         this.refs.workerName.getDOMNode().value = '';
+        this.refs.ip.getDOMNode().value = '';
         return;
     },
     render() {

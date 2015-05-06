@@ -121,7 +121,7 @@ class EthClient {
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
-            let [wName, wLength, wPrice] = this.contract.workersInfo(address);
+            let [wName, wIP, wLength, wPrice] = this.contract.workersInfo(address);
             wLength = wLength.toNumber()
             wPrice = wPrice.toNumber();
 
