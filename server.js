@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import dockerx from 'docker-transfer';
+import moment from 'moment';
 
 let app = express();
 
@@ -20,14 +21,20 @@ app.post('/transfer', function(req, res) {
     let host = req.body.host;
     let port = req.body.port;
     dockerx.client.sendImage(imageHash, host, port);
-    res.send(imageHash + " " + host + ":" + port + "\n");
+    res.send(timestamp() + "TRANSFER: Init transfer of " + imageHash + " to " + host + ":" + port + "\n");
 });
 
 app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
-    dockerx.server.receive(name, port).then(res.send("Started listening at " + port + "\n"));
+    dockerx.server.receive(name, port).then(
+        res.send(timestamp() + " RECEIVE: Init docker-transfer server listening at " + port + "\n")
+    );
 });
+
+function timestamp() {
+    return moment().format('YYYY-MM-DD h:mm:ss');
+}
 
 // Run server
 let server = app.listen(8000, function () {
