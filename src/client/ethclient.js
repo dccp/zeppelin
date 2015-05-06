@@ -44,7 +44,7 @@ class EthClient {
 
     // returns a work agreement if present for the given worker
     checkForAgreement(worker) {
-        let agreementAddress = this.contract.workersInfo(worker)[3];
+        let agreementAddress = this.contract.workersInfo(worker)[4];
         if (web3.toDecimal(agreementAddress) != 0) {
             let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
             return new WorkAgreement(agreementAddress);
