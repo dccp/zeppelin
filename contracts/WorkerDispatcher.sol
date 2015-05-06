@@ -2,14 +2,14 @@ contract WorkAgreement {
     address client;
     address worker;
     mapping (address => bool) testers;
-    uint price;
-    uint end;
+    uint public price;
+    uint public end;
     // ip of worker
-    bytes32 ip;
+    bytes32 public ip;
     // port for docker transfer
     uint dtport;
     // port for hosting
-    uint port;
+    uint public port;
 
     function WorkAgreement(address _client, address _worker, uint _price,
                            uint length) {
