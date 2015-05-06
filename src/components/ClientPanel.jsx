@@ -3,6 +3,7 @@ import EthClient from "../client/ethclient.js";
 import $ from "jquery";
 import KeyValue from "./KeyValue.jsx";
 import PubSub from "pubsub-js"
+import ContractStructure from "../fixtures/contractStructure.js";
 
 let ClientPanel = React.createClass({
     getInitialState() {
@@ -84,10 +85,17 @@ let ClientPanel = React.createClass({
         let rows = this.filterWorkers().map((content) =>
             <TableRow key={content.pubkey} rowContent={content} canBuy={this.canBuy()} clientPanel={this} />
         );
+        let clientAgreements = JSON.parse(localStorage.getItem("clientAgreements"));
+        let agreements = Object.keys(clientAgreements).map((worker) =>
+            <ClientAgreement agreements={clientAgreements} worker={worker} />
+        );
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
+                    <h2>Active workagreements</h2>
+                    {agreements}
+                    <h2>Create new work agreement</h2>
                     <div className="row">
                         <div className="col-md-4">
                             <div className="form-group">
@@ -144,6 +152,22 @@ let TableRow = React.createClass({
                 </td>
             </tr>
         );
+    }
+})
+
+let ClientAgreement = React.createClass({
+    render() {
+        let agreement = this.props.agreements[this.props.worker];
+        let contractAddress = agreement.contract.address;
+        let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
+        let contract = new WorkAgreement(contractAddress);
+        return (
+            <span>
+                <h3>{agreement.imageHash}</h3>
+                Worker: <strong>{this.props.worker}</strong><br />
+                Contract: <strong>{contractAddress}</strong>
+            </span>
+        )
     }
 })
 

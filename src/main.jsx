@@ -63,6 +63,7 @@ let App = React.createClass({
                                                   (agreement) => {
                                                       let cfp = this.checkForDtPort.bind(this, agreement);
                                                       agreement.token = EthClient.subscribe(cfp);
+                                                      localStorage.setItem("clientAgreements", JSON.stringify(this.clientAgreements));
                                                   });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
