@@ -33,7 +33,7 @@ app.post('/receive', function(req, res) {
 });
 
 function timestamp() {
-    return moment().format('YYYY-MM-DD h:mm:ss');
+    return moment().format('YYYY-MM-DD HH:mm:ss');
 }
 
 // Run server
