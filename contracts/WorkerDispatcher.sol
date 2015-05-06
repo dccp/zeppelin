@@ -4,8 +4,6 @@ contract WorkAgreement {
     mapping (address => bool) testers;
     uint public price;
     uint public end;
-    // ip of worker
-    bytes32 public ip;
     // port for docker transfer
     uint dtport;
     // port for hosting
