@@ -52,6 +52,8 @@ class EthClient {
     }
 
     getDashboard() {
+        let apiVersion = web3.version.api;
+        let clientVersion = web3.version.client;
         let coinbase = this.getCoinbase();
         let peerCount = web3.net.peerCount;
         return Q.all([
@@ -66,6 +68,8 @@ class EthClient {
             }
 
             return [
+                {label: "Client Version", value: clientVersion},
+                {label: "API Version", value: apiVersion},
                 {label: "Coinbase", value: coinbase},
                 {label: "Accounts", value: web3.eth.accounts},
                 {label: "Balance", value: this.formatBalance(balance), title: balance},
