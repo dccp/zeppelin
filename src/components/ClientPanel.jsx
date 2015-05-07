@@ -63,22 +63,12 @@ let ClientPanel = React.createClass({
 
     submit(worker, price) {
         let imageHash = this.refs.image.getDOMNode().value;
-        console.log(imageHash);
         if (this.state.minLength === 0 || !imageHash) {
             return;
         }
         EthClient.buyContract(worker, 1, price, this.state.minLength);
 
         PubSub.publish('agreement_bought', [worker, imageHash]);
-        //$.post("/transfer", {
-            //imageHash: imageHash,
-            //host: "someHost",
-            //port:"somePort"
-        //}, (data) => {
-            //console.log("Sent docker-xfer:" + data);
-        //}).fail((xhr, status, err) => {
-            //console.error(document.URL, status, err.toString())
-        //});
     },
 
     render() {
