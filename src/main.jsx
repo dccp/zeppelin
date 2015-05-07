@@ -58,11 +58,12 @@ let App = React.createClass({
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
+        let checkForAgreement = this.checkForAgreement;
         let partial = this.checkForAgreement.bind(this,
                                                   worker,
                                                   this.clientAgreements[worker],
                                                   (agreement) => {
-                                                      let cfp = this.checkForDtPort(agreement).bind(this);
+                                                      let cfp = checkForDtPort.bind(this, agreement);
                                                       agreement.token = EthClient.subscribe(cfp);
                                                       localStorage.setItem("clientAgreements", JSON.stringify(this.clientAgreements));
                                                   });
