@@ -10,7 +10,7 @@ Start running node and watching for file updates
 
     $ npm run watch
 
-Node is now running on localhost:8000, and expects eth/AZ on localhost:8080.
+Node is now running on localhost:8000, and expects Ethereum JSON-RPC on localhost:8545.
 
 ## How do I release?
 I don't know why we would be making any releases of this yet, but...
@@ -23,7 +23,7 @@ Deploy on node with
 
     $ npm start
 
-Success! Node is running on localhost:8000, and expects eth/AZ on localhost:8080.
+Success! Node is running on localhost:8000, and expects Etherum JSON-RPC on localhost:8545.
 
 ## Check the status of a mini-Zeppelin
 The status is available on http://zep.qng.se.
