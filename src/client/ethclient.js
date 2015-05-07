@@ -44,7 +44,7 @@ class EthClient {
 
     // returns a work agreement if present for the given worker
     checkForAgreement(worker) {
-        let agreementAddress = this.contract.workersInfo(worker)[3];
+        let agreementAddress = this.contract.workersInfo(worker)[4];
         if (web3.toDecimal(agreementAddress) != 0) {
             let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
             return new WorkAgreement(agreementAddress);
@@ -52,6 +52,8 @@ class EthClient {
     }
 
     getDashboard() {
+        let apiVersion = web3.version.api;
+        let clientVersion = web3.version.client;
         let coinbase = this.getCoinbase();
         let peerCount = web3.net.peerCount;
         return Q.all([
@@ -66,6 +68,8 @@ class EthClient {
             }
 
             return [
+                {label: "Client Version", value: clientVersion},
+                {label: "API Version", value: apiVersion},
                 {label: "Coinbase", value: coinbase},
                 {label: "Accounts", value: web3.eth.accounts},
                 {label: "Balance", value: this.formatBalance(balance), title: balance},
@@ -84,8 +88,8 @@ class EthClient {
         });
     }
 
-    registerWorker(maxLength, price, name) {
-        this.contract.registerWorker(maxLength, price, name);
+    registerWorker(maxLength, price, name, ip) {
+        this.contract.registerWorker(maxLength, price, name, ip);
         this._worker = true;
     }
 
@@ -117,7 +121,7 @@ class EthClient {
         let workers = [];
         for (let i = 0; i < numWorkers; i++) {
             let address = this.contract.workerList(i);
-            let [wName, wLength, wPrice] = this.contract.workersInfo(address);
+            let [wName, wIP, wLength, wPrice] = this.contract.workersInfo(address);
             wLength = wLength.toNumber()
             wPrice = wPrice.toNumber();
 

@@ -6,13 +6,15 @@ let FormPanel = React.createClass({
         let maxLength = this.refs.maxLength.getDOMNode().value.trim();
         let price = this.refs.price.getDOMNode().value.trim();
         let workerName = this.refs.workerName.getDOMNode().value.trim();
-        if (!maxLength || !price || !workerName) {
+        let ip = this.refs.ip.getDOMNode().value.trim();
+        if (!maxLength || !price || !workerName || !ip) {
             return;
         }
-        this.props.onContractInteract({maxLength: maxLength, price: price, workerName: workerName});
+        this.props.onContractInteract({maxLength: maxLength, price: price, workerName: workerName, ip: ip});
         this.refs.maxLength.getDOMNode().value = '';
         this.refs.price.getDOMNode().value = '';
         this.refs.workerName.getDOMNode().value = '';
+        this.refs.ip.getDOMNode().value = '';
         return;
     },
     render() {
@@ -35,6 +37,10 @@ let FormPanel = React.createClass({
                             <div className="form-group">
                                 <label className="control-label">Name</label>
                                 <input type="text" className="form-control" placeholder="Name to display" ref="workerName"/>
+                            </div>
+                            <div className="form-group">
+                                <label className="control-label">Ip</label>
+                                <input type="text" className="form-control" placeholder="Your public ip" ref="ip"/>
                             </div>
                             <input className="btn btn-primary" type="submit" value="Register worker" />
                         </form>

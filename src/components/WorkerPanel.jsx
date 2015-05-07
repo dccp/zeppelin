@@ -4,7 +4,8 @@ import EthClient from "../client/ethclient.js";
 
 let WorkerPanel = React.createClass({
     registerWorker(worker) {
-        EthClient.registerWorker(worker.maxLength, worker.price, worker.workerName)
+        EthClient.registerWorker(worker.maxLength, worker.price,
+                                 worker.workerName, worker.ip)
     },
     render() {
         return (
