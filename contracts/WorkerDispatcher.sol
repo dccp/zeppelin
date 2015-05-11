@@ -5,7 +5,7 @@ contract WorkAgreement {
     uint public price;
     uint public end;
     // port for docker transfer
-    uint dtport;
+    uint public dtport;
     // port for hosting
     uint public port;
 
