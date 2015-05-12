@@ -94,11 +94,7 @@ class EthClient {
     }
 
     buyContract(worker, redundancy, price, length) {
-        let options = {
-            value: length * price,
-            gas: 500000
-        };
-        this.contract.buyContract(worker, redundancy, length, options);
+        this.contract.buyContract(worker, redundancy, length);
     }
 
     isWorker() {
