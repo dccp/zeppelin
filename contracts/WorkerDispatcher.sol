@@ -48,8 +48,7 @@ contract WorkerDispatcher {
 
     function buyContract(address worker, uint redundancy, uint length)
                 returns (address addr) {
-        if (msg.value < length * workersInfo[worker].price &&
-            workersInfo[worker].name == "" &&
+        if (workersInfo[worker].name == "" &&
             workersInfo[worker].maxLength < length) return msg.sender;
         WorkAgreement wa = new WorkAgreement(msg.sender, worker,
                                              workersInfo[worker].price,

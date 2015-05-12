@@ -28,7 +28,6 @@ let App = React.createClass({
     },
     checkForDtPort(agreement, worker) {
         console.log("Check for dtport: ", agreement.contract.dtport().toNumber());
-        console.log(worker);
         console.log("Check for ip: ", EthClient.contract.workersInfo(worker));
         if (agreement.contract.dtport().toNumber()) {
             $.post("/transfer", {
@@ -57,6 +56,7 @@ let App = React.createClass({
         }).fail((xhr, status, err) => {
             console.error(document.URL, status, err.toString())
         });
+        window.wcontract = agreement.contract;
         agreement.contract.setWorkerDtPort(DockerConfig.port);
         console.log(agreement.contract.dtport());
     },
