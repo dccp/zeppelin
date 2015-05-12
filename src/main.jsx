@@ -41,11 +41,11 @@ let App = React.createClass({
             })
             // start listening for hosting port
             PubSub.unsubscribe(agreement.token);
-            agreement.token = EthClient.subscribe(this.checkForPort.bind(this, agreement));
+            agreement.token = EthClient.subscribe(this.checkForPort.bind(this, agreement, worker));
         }
     },
-    checkforPort(agreement) {
-        console.log("Docker forwarde  port: ", agreement.contract.port);
+    checkForPort(agreement, worker) {
+        console.log("Docker forwarde  port: ", EthClient.contract.workersInfo(worker)[6].toNumber());
         // tell ui that docker is hosted
     },
     workerEnableXfer(agreement) {
