@@ -20,14 +20,14 @@ let Route = Router.Route;
 let App = React.createClass({
     checkForAgreement(worker, agreement, callback) {
         //console.log(agreement)
-        if (agreement.contract = EthClient.checkForAgreement(worker)) {
+        if (agreement.active = EthClient.checkForAgreement(worker)) {
             console.log(agreement);
             PubSub.unsubscribe(agreement.token);
             callback(agreement);
         }
     },
     checkForDtPort(agreement, worker) {
-        console.log("Check for dtport: ", agreement.contract.dtport().toNumber());
+        console.log("Check for dtport: ", EthClient.contract.workersInfo[worker].dtport().toNumber());
         console.log("Check for ip: ", EthClient.contract.workersInfo(worker));
         if (agreement.contract.dtport().toNumber()) {
             $.post("/transfer", {
@@ -56,9 +56,7 @@ let App = React.createClass({
         }).fail((xhr, status, err) => {
             console.error(document.URL, status, err.toString())
         });
-        window.wcontract = agreement.contract;
-        agreement.contract.setWorkerDtPort(DockerConfig.port);
-        console.log(agreement.contract.dtport());
+        EthClient.contract.setWorkerDtPort(DockerConfig.port);
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };

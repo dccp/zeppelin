@@ -42,13 +42,9 @@ class EthClient {
         return (unit !== 'wei' ? web3.fromWei(wei, unit).toFormat() : wei) + ' ' + unit;
     }
 
-    // returns a work agreement if present for the given worker
+    // returns a bool representing the existence of an agreement
     checkForAgreement(worker) {
-        let agreementAddress = this.contract.workersInfo(worker)[4];
-        if (web3.toDecimal(agreementAddress) != 0) {
-            let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
-            return new WorkAgreement(agreementAddress);
-        }
+        return this.contract.workersInfo(worker)[4];
     }
 
     getDashboard() {
