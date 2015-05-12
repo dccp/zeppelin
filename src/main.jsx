@@ -21,16 +21,19 @@ let App = React.createClass({
     checkForAgreement(worker, agreement, callback) {
         //console.log(agreement)
         if (agreement.contract = EthClient.checkForAgreement(worker)) {
+            console.log(agreement);
             PubSub.unsubscribe(agreement.token);
             callback(agreement);
         }
     },
-    checkForDtPort(agreement) {
-        console.log("Check for dtport: ", agreement.contract.dtport);
-        if (agreement.contract.dtport) {
+    checkForDtPort(agreement, worker) {
+        console.log("Check for dtport: ", agreement.contract.dtport().toNumber());
+        console.log(worker);
+        console.log("Check for ip: ", EthClient.contract.workersInfo(worker));
+        if (agreement.contract.dtport().toNumber()) {
             $.post("/transfer", {
                 imageHash: agreement.imageHash,
-                host: agreement.contract.ip,
+                host: EthClient.contract.workersInfo(worker),
                 port: agreement.contract.dtport
             }, (data) => {
                 console.log("Sent docker with data: " + data);
@@ -55,15 +58,16 @@ let App = React.createClass({
             console.error(document.URL, status, err.toString())
         });
         agreement.contract.setWorkerDtPort(DockerConfig.port);
+        console.log(agreement.contract.dtport());
     },
     addAgreement(msg, [worker, imageHash]) {
         this.clientAgreements[worker] = { imageHash: imageHash };
-        let checkForAgreement = this.checkForAgreement;
+        let checkForDtPort = this.checkForDtPort;
         let partial = this.checkForAgreement.bind(this,
                                                   worker,
                                                   this.clientAgreements[worker],
                                                   (agreement) => {
-                                                      let cfp = checkForDtPort.bind(this, agreement);
+                                                      let cfp = checkForDtPort.bind(this, agreement, worker);
                                                       agreement.token = EthClient.subscribe(cfp);
                                                       localStorage.setItem("clientAgreements", JSON.stringify(this.clientAgreements));
                                                   });
