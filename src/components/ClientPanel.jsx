@@ -66,7 +66,7 @@ let ClientPanel = React.createClass({
         if (this.state.minLength === 0 || !imageHash) {
             return;
         }
-        EthClient.buyContract(worker, 1, price, this.state.minLength);
+        EthClient.buyContract(worker, price, this.state.minLength);
 
         PubSub.publish('agreement_bought', [worker, imageHash]);
     },

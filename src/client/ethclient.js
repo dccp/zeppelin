@@ -93,8 +93,8 @@ class EthClient {
         this.contract.changeWorkerPrice(newPrice);
     }
 
-    buyContract(worker, redundancy, price, length) {
-        this.contract.buyContract(worker, redundancy, length);
+    buyContract(worker, price, length) {
+        this.contract.buyContract(worker, length);
     }
 
     isWorker() {
