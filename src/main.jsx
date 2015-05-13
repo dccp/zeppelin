@@ -71,11 +71,7 @@ let App = React.createClass({
                                                   });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
-    componentWillMount() {
-        this.clientAgreements = {};
-        this.workerAgreements = { "default": {} };
-        this.tokens = {};
-        this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
+    checkIfWorker() {
         if (EthClient.isWorker()) {
             let partial = this.checkForAgreement.bind(this,
                                                       EthClient.getCoinbase(),
@@ -83,6 +79,14 @@ let App = React.createClass({
                                                       this.workerEnableXfer);
             this.workerAgreements.default.token = EthClient.subscribe(partial);
         }
+    },
+    componentWillMount() {
+        this.clientAgreements = {};
+        this.workerAgreements = { "default": {} };
+        this.tokens = {};
+        this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
+        this.checkIfWorker();
+        PubSub.subscribe('worker_registered', this.checkIfWorker);
     },
     componentWillUnmount() {
         EthClient.unsubscribe(this.tokens.worker);

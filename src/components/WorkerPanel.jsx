@@ -1,11 +1,13 @@
 import React from "react";
 import FormPanel from "./FormPanel.jsx"
 import EthClient from "../client/ethclient.js";
+import PubSub from "pubsub-js"
 
 let WorkerPanel = React.createClass({
     registerWorker(worker) {
         EthClient.registerWorker(worker.maxLength, worker.price,
                                  worker.workerName, worker.ip)
+        PubSub.publish('worker_registered');
     },
     render() {
         return (
