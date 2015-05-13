@@ -38,7 +38,7 @@ let App = React.createClass({
                 console.log("Sent docker with data: " + data);
             }).fail((xhr, status, err) => {
                 console.error(document.URL, status, err.toString());
-            })
+            });
             // start listening for hosting port
             PubSub.unsubscribe(agreement.token);
             agreement.token = EthClient.subscribe(this.checkForPort.bind(this, agreement, worker));
