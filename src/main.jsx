@@ -71,8 +71,20 @@ let App = React.createClass({
                                                   });
         this.clientAgreements[worker].token = EthClient.subscribe(partial);
     },
+    workerRegistered() {
+        if (EthClient.contract.workersInfo(web3.eth.coinbase)[4]) {
+            if (this.checkIfWorkerToken == undefined) {
+                this.checkIfWorkerToken = EthClient.subscribe(this.workerRegistered);
+            }
+        } else {
+            this.checkIfWorker();
+        }
+    },
     checkIfWorker() {
         if (EthClient.isWorker()) {
+            if (this.checkIfWorkerToken != undefined) {
+                EthClient.unsubscribe(this.checkIfWorkerToken);
+            }
             let partial = this.checkForAgreement.bind(this,
                                                       EthClient.getCoinbase(),
                                                       this.workerAgreements.default,
@@ -86,7 +98,7 @@ let App = React.createClass({
         this.tokens = {};
         this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
         this.checkIfWorker();
-        PubSub.subscribe('worker_registered', this.checkIfWorker);
+        PubSub.subscribe('worker_registered', this.workerRegistered);
     },
     componentWillUnmount() {
         EthClient.unsubscribe(this.tokens.worker);
