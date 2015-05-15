@@ -105,7 +105,7 @@ let App = React.createClass({
         }
     },
     componentWillMount() {
-        this.clientAgreements = {};
+        this.clientAgreements = JSON.parse(localStorage.getItem("clientAgreements"));
         this.workerAgreements = { "default": {} };
         this.tokens = {};
         this.tokens.client = PubSub.subscribe('agreement_bought', this.addAgreement);
