@@ -1,9 +1,11 @@
 import express from 'express';
+import SSE from 'express-sse';
 import bodyParser from 'body-parser';
 import dockerx from 'docker-transfer';
 import moment from 'moment';
 
 let app = express();
+let sse = new SSE(['connected']);
 
 // Serve static files
 app.use(express.static(__dirname + '/build'));
@@ -24,12 +26,16 @@ app.post('/transfer', function(req, res) {
     res.send(timestamp() + " TRANSFER: Init client transfer of " + imageHash + " to " + host + ":" + port + "\n");
 });
 
+app.get('/stream', sse.init);
+
 app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
+    sse.send(timestamp())
     dockerx.server.receive(name, port).then(
-        res.send(timestamp() + " RECEIVE: Init server listening at " + port + "\n")
+        sse.send('Finished at ' + timestamp())
     );
+    res.send(timestamp() + " RECEIVE: Init server listening at " + port + "\n");
 });
 
 function timestamp() {

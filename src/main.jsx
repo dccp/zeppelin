@@ -49,6 +49,10 @@ let App = React.createClass({
         // tell ui that docker is hosted
     },
     workerEnableXfer(agreement) {
+        let es = new EventSource('/stream');
+        es.onmessage = function(event) {
+            console.log(event);
+        };
         $.post("/receive", {
             port: DockerConfig.port
         }, (data) => {
