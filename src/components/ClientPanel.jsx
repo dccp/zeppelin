@@ -10,7 +10,8 @@ let ClientPanel = React.createClass({
         return ({
             minLength: 0,
             maxPrice: Infinity,
-            images: []
+            images: [],
+            agreements: {}
         });
     },
 
@@ -27,6 +28,9 @@ let ClientPanel = React.createClass({
     },
 
     componentDidMount() {
+        this.refreshAgreements();
+        EthClient.subscribe(this.refreshAgreements);
+
         $.getJSON("/images", (images) => {
             this.setState({images: images});
         }).fail((xhr, status, err) => {
@@ -71,23 +75,32 @@ let ClientPanel = React.createClass({
         PubSub.publish('agreement_bought', [worker, imageHash]);
     },
 
+    refreshAgreements() {
+        let clientAgreements = JSON.parse(localStorage.getItem("clientAgreements"));
+        this.setState({agreements: clientAgreements});
+    },
+
+    renderAgreements() {
+        let clientAgreements = this.state.agreements;
+        let agreements;
+        if (clientAgreements !== undefined) {
+            agreements = Object.keys(clientAgreements).map((worker) =>
+                <ClientAgreement agreements={clientAgreements} worker={worker} />
+            );
+        }
+        return agreements;
+    },
+
     render() {
         let rows = this.filterWorkers().map((content) =>
             <TableRow key={content.pubkey} rowContent={content} canBuy={this.canBuy()} clientPanel={this} />
         );
-        let clientAgreements = JSON.parse(localStorage.getItem("clientAgreements"));
-        let agreements = "";
-        if (clientAgreements !== null) {
-            Object.keys(clientAgreements).map((worker) =>
-                <ClientAgreement agreements={clientAgreements} worker={worker} />
-            );
-        }
         return (
             <div className="container">
                 <div className="page-header">
                     <h1>Client frontend. Deal with it.</h1>
                     <h2>Active workagreements</h2>
-                    {agreements}
+                    {this.renderAgreements()}
                     <h2>Create new work agreement</h2>
                     <div className="row">
                         <div className="col-md-4">
@@ -151,17 +164,20 @@ let TableRow = React.createClass({
 let ClientAgreement = React.createClass({
     render() {
         let agreement = this.props.agreements[this.props.worker];
-        let contractAddress = agreement.contract.address;
-        let WorkAgreement = web3.eth.contract(ContractStructure.WorkAgreement);
-        let contract = new WorkAgreement(contractAddress);
+        let workerInfo = EthClient.contract.workersInfo(this.props.worker);
+        let port = workerInfo[6].toNumber();
+        if (!port) {
+            port = "";
+        }
+        let address = workerInfo[1] + ":" + port;
+        if (port) {
+            address = (<a href="http://{address}">{address}</a>);
+        }
         return (
             <span>
-                <h3>{agreement.imageHash}</h3>
+                <h4>{agreement.imageHash}</h4>
                 Worker: <strong>{this.props.worker}</strong><br />
-                Contract: <strong>{contractAddress}</strong><br />
-                Price: <strong>{contract.price().toNumber()}</strong><br />
-                Length: <strong>{contract.end().toNumber()}</strong><br />
-                IP/Port: <strong>{EthClient.contract.workersInfo(this.props.worker)[1]}</strong><br />
+                IP/Port: <strong>{address}</strong>
             </span>
         )
     }
