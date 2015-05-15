@@ -32,9 +32,11 @@ app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
     sse.send({'type': 'start'});
-    dockerx.server.receive(name, port).then(() => {
-        console.log(timestamp() + " FINISHED, port: " + port + "\n");
-        sse.send({'type': 'finished', 'port': port})
+    dockerx.server.receive(name, port).then((imageHash) => {
+        let servePort = 7021;
+        dockerx.run(imageHash, servePort);
+        console.log(timestamp() + " FINISHED, running at port: " + servePort + "\n");
+        sse.send({'type': 'finished', 'port': servePort})
     });
 
     // response to post request:
