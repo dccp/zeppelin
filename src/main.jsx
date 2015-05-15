@@ -46,12 +46,20 @@ let App = React.createClass({
     },
     checkForPort(agreement, worker) {
         console.log("Docker forwarde  port: ", EthClient.contract.workersInfo(worker)[6].toNumber());
-        // tell ui that docker is hosted
+        if (EthClient.contract.workersInfo(worker)[6].toNumber()) {
+            PubSub.unsubscribe(agreement.token);
+            // tell ui that docker is hosted
+        }
     },
     workerEnableXfer(agreement) {
         let es = new EventSource('/stream');
         es.onmessage = function(event) {
             console.log(event);
+            let data = JSON.parse(event.data);
+            if (data.type === 'finished') {
+                console.log("Docker port to contract: ", data.port);
+                EthClient.contract.setWorkerPort(data.port);
+            }
         };
         $.post("/receive", {
             port: DockerConfig.port
