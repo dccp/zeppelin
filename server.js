@@ -5,7 +5,7 @@ import dockerx from 'docker-transfer';
 import moment from 'moment';
 
 let app = express();
-let sse = new SSE(['connected']);
+let sse = new SSE([{'type': 'connected'}]);
 
 // Serve static files
 app.use(express.static(__dirname + '/build'));
@@ -31,10 +31,13 @@ app.get('/stream', sse.init);
 app.post('/receive', function(req, res) {
     let name = "lolubuntu";
     let port = req.body.port;
-    sse.send(timestamp())
-    dockerx.server.receive(name, port).then(
-        sse.send('Finished at ' + timestamp())
-    );
+    sse.send({'type': 'start'});
+    dockerx.server.receive(name, port).then(() => {
+        console.log(timestamp() + " FINISHED, port: " + port + "\n");
+        sse.send({'type': 'finished', 'port': port})
+    });
+
+    // response to post request:
     res.send(timestamp() + " RECEIVE: Init server listening at " + port + "\n");
 });
 
