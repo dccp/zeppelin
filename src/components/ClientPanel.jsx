@@ -175,8 +175,8 @@ let ClientAgreement = React.createClass({
         }
         return (
             <span>
-                <h4>{agreement.imageHash}</h4>
-                Worker: <strong>{this.props.worker}</strong><br />
+                <h4>{this.props.worker}</h4>
+                Image-hash: <strong>{agreement.imageHash}</strong><br />
                 IP/Port: <strong>{address}</strong>
             </span>
         )
