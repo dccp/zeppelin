@@ -37,7 +37,7 @@ app.post('/receive', function(req, res) {
         let output = dockerx.run(imageHash, servePort);
         console.log(timestamp() + " FINISHED, running at port: " + servePort + ", hash: " + output + "\n");
         sse.send({'type': 'finished', 'port': servePort});
-        dockerx.run(imageHash, servePort);
+        dockerx.server.run(imageHash, servePort);
     });
 
     // response to post request:
