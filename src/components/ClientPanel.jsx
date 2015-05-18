@@ -171,7 +171,7 @@ let ClientAgreement = React.createClass({
         }
         let address = workerInfo[1] + ":" + port;
         if (port) {
-            address = (<a href="http://{address}">{address}</a>);
+            address = (<a href={"http://" + address}>{address}</a>);
         }
         return (
             <span>

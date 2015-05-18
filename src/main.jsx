@@ -16,6 +16,7 @@ import "bootstrap";
 let DefaultRoute = Router.DefaultRoute;
 let RouteHandler = Router.RouteHandler;
 let Route = Router.Route;
+let es;
 
 let App = React.createClass({
     checkForAgreement(worker, agreement, callback) {
@@ -52,15 +53,17 @@ let App = React.createClass({
         }
     },
     workerEnableXfer(agreement) {
-        let es = new EventSource('/stream');
-        es.onmessage = function(event) {
-            console.log(event);
-            let data = JSON.parse(event.data);
-            if (data.type === 'finished') {
-                console.log("Docker port to contract: ", data.port);
-                EthClient.contract.setWorkerPort(data.port);
-            }
-        };
+        if (!es) {
+            es = new EventSource('/stream');
+            es.onmessage = function(event) {
+                console.log(event);
+                let data = JSON.parse(event.data);
+                if (data.type === 'finished') {
+                    console.log("Docker port to contract: ", data.port);
+                    EthClient.contract.setWorkerPort(data.port);
+                }
+            };
+        }
         $.post("/receive", {
             port: DockerConfig.port
         }, (data) => {
